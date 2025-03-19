@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <!-- Breaking News Shimmer -->
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerBreakingNews"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shimmer_auto_start="true"
+            app:shimmer_base_color="#DDDDDD"
+            app:shimmer_colored="true"
+            app:shimmer_highlight_color="#E7E7E7">
+
+            <include layout="@layout/item_shimmer_breaking_news" />
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <!-- TabLayout Shimmer -->
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerTabLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerBreakingNews"
+            app:shimmer_auto_start="true"
+            app:shimmer_base_color="#DDDDDD"
+            app:shimmer_colored="true"
+            app:shimmer_highlight_color="#E7E7E7">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shimmer_dot" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shimmer_dot" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shimmer_dot" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shimmer_dot" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shimmer_dot" />
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <!-- Recommendation Title Shimmer -->
+        <View
+            android:id="@+id/shimmerRecommendationTitle"
+            android:layout_width="150dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:background="#DDDDDD"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerTabLayout" />
+
+        <View
+            android:id="@+id/shimmerViewAll"
+            android:layout_width="70dp"
+            android:layout_height="16dp"
+            android:background="#DDDDDD"
+            app:layout_constraintBottom_toBottomOf="@+id/shimmerRecommendationTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/shimmerRecommendationTitle" />
+
+        <!-- Recommendation News Shimmer -->
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerRecommendation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerRecommendationTitle"
+            app:shimmer_auto_start="true"
+            app:shimmer_base_color="#DDDDDD"
+            app:shimmer_colored="true"
+            app:shimmer_highlight_color="#E7E7E7">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/item_shimmer_news" />
+
+                <include layout="@layout/item_shimmer_news" />
+
+                <include layout="@layout/item_shimmer_news" />
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView> 

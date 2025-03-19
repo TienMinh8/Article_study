@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ứng dụng Tin tức</string>
+    <string name="tab_home">Trang chủ</string>
+    <string name="tab_discover">Khám phá</string>
+    <string name="tab_saved">Đã lưu</string>
+    <string name="tab_notifications">Thông báo</string>
+    <string name="tab_profile">Cá nhân</string>
+    
+    <string name="view_all">Xem tất cả</string>
+    <string name="breaking_news">Tin nóng</string>
+    <string name="recommendation">Đề xuất</string>
+    <string name="search">Tìm kiếm</string>
+    <string name="sports">Thể thao</string>
+    <string name="education">Giáo dục</string>
+    <string name="health">Sức khỏe</string>
+    <string name="public_news">Xã hội</string>
+    <string name="business">Kinh doanh</string>
+    <string name="technology">Công nghệ</string>
+    <string name="news_from_all_over_the_world">Tin tức từ khắp nơi trên thế giới</string>
+    <string name="unknown_source">Nguồn không xác định</string>
+    <string name="recommended_for_you">Đề xuất cho bạn</string>
+    <string name="popular_topics">Chủ đề phổ biến</string>
+    <string name="all">Tất cả</string>
+    <string name="science">Khoa học</string>
+    <string name="entertainment">Giải trí</string>
+    <string name="article_detail">Chi tiết bài viết</string>
+    <string name="no_internet_connection">Không có kết nối internet. Vui lòng kiểm tra kết nối và thử lại.</string>
+    <string name="no_article_url">Không tìm thấy URL bài viết.</string>
+    <string name="load_more">Xem thêm</string>
+    <string name="using_sample_data">Đang sử dụng dữ liệu mẫu</string>
+</resources> 

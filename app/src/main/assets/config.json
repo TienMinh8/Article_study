@@ -1,0 +1,17 @@
+{
+  "api": {
+    "baseUrl": "https://newsapi.org/v2/",
+    "apiKey": "66776baf393d475c8b76c24c3ad7e791",
+    "endpoints": {
+      "everything": "everything",
+      "topHeadlines": "top-headlines"
+    },
+    "defaultParams": {
+      "tesla": "q=tesla",
+      "technology": "category=technology&country=us",
+      "business": "category=business&country=us",
+      "health": "category=health&country=us",
+      "sports": "category=sports&country=us"
+    }
+  }
+}
