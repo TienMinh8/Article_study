@@ -16,11 +16,6 @@
         android:title="@string/tab_saved" />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_notifications"
-        android:title="@string/tab_notifications" />
-
-    <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_profile"
         android:title="@string/tab_profile" />

@@ -201,3 +201,24 @@ Tính năng này giúp cải thiện hiệu suất và trải nghiệm người 
 - **Phản hồi hiệu quả**: Thông báo dữ liệu thay đổi cho adapter một cách hiệu quả để cập nhật chỉ những phần cần thiết của RecyclerView
 
 Các tính năng này giúp ứng dụng hoạt động ổn định và nhanh hơn, đặc biệt là khi có lượng lớn bài viết cần hiển thị.
+
+## Chế độ Dark/Light và Khả năng tiếp cận
+
+### Chế độ Dark Mode
+Ứng dụng hỗ trợ đầy đủ chế độ Dark mode, với các tùy chọn:
+- **Theo hệ thống**: Tự động thay đổi theo cài đặt của thiết bị
+- **Sáng**: Luôn sử dụng giao diện sáng
+- **Tối**: Luôn sử dụng giao diện tối
+
+Các icon trong ứng dụng sẽ tự động thay đổi màu sắc dựa trên theme, đảm bảo chúng luôn hiển thị rõ ràng trên nền tối hoặc sáng. Cụ thể:
+- Trong chế độ sáng: Các icon có màu tối
+- Trong chế độ tối: Các icon có màu sáng để dễ nhìn thấy
+
+### Cài đặt Cỡ chữ
+Người dùng có thể điều chỉnh kích thước chữ toàn bộ ứng dụng:
+- Nhỏ: Dành cho người muốn hiển thị nhiều nội dung hơn
+- Vừa: Kích thước mặc định
+- Lớn: Dành cho người đọc thoải mái hơn
+
+### Chế độ Tương phản cao
+Tăng độ tương phản giữa văn bản và nền, giúp người dùng cao tuổi hoặc có vấn đề về thị lực đọc dễ dàng hơn.

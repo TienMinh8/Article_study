@@ -19,6 +19,7 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.article.MainActivity;
 import com.example.article.R;
 import com.example.article.adapter.BreakingNewsAdapter;
 import com.example.article.adapter.NewsAdapter;
@@ -222,6 +223,14 @@ public class HomeFragment extends Fragment implements NewsAdapter.OnNewsClickLis
             page.setScaleY(0.90f + r * 0.10f);
         });
         viewPagerBreakingNews.setPageTransformer(compositeTransformer);
+        
+        // Thiết lập click listener cho nút thông báo
+        view.findViewById(R.id.btnNotification).setOnClickListener(v -> {
+            // Gọi đến MainActivity để xử lý hiển thị thông báo
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).showNotifications(v);
+            }
+        });
         
         // Thiết lập các click listener cho các thành phần khác
         view.findViewById(R.id.tvViewAll).setOnClickListener(v -> 

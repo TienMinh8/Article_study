@@ -64,4 +64,32 @@
     <!-- Load More -->
     <string name="loading_more">Loading more…</string>
     <string name="no_more_results">No more results</string>
+
+    <!-- Accessibility Settings -->
+    <string name="appearance_settings">Cài đặt giao diện</string>
+    <string name="dark_mode">Chế độ tối</string>
+    <string name="dark_mode_desc">Sử dụng nền tối để giảm độ sáng màn hình, tiết kiệm pin và bảo vệ mắt khi đọc trong điều kiện ánh sáng yếu</string>
+    <string name="font_size">Kích thước chữ</string>
+    <string name="font_size_desc">Điều chỉnh kích thước chữ hiển thị trong ứng dụng</string>
+    <string name="font_size_small">Nhỏ</string>
+    <string name="font_size_medium">Vừa (Mặc định)</string>
+    <string name="font_size_large">Lớn</string>
+    <string name="font_size_extra_large">Rất lớn</string>
+    <string name="high_contrast_desc">Tăng độ tương phản để dễ đọc và dễ nhìn hơn</string>
+    <string name="account_settings">Cài đặt tài khoản</string>
+    <string name="accessibility_settings">Khả năng tiếp cận</string>
+
+    <!-- Profile Settings -->
+    <string name="theme_settings">Theme Settings</string>
+    <string name="system_theme">System</string>
+    <string name="light_theme">Light</string>
+    <string name="dark_theme">Dark</string>
+    <string name="font_size_settings">Font Size</string>
+    <string name="small_text">Small</string>
+    <string name="medium_text">Medium</string>
+    <string name="large_text">Large</string>
+    <string name="high_contrast">High Contrast</string>
+    <string name="restart_to_apply_font_size">Restart app to apply new font size</string>
+    <string name="restart_to_apply_high_contrast">Restart app to apply contrast setting</string>
+    <!-- Profile Settings End -->
 </resources>

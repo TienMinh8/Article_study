@@ -1,5 +1,19 @@
 # Nhật Ký Thay Đổi
 
+## [Unreleased]
+
+### Sửa lỗi (Fix)
+- Sửa lỗi hiển thị icon trong dark mode bằng cách thay đổi thuộc tính tint để sử dụng màu theo theme thay vì màu đen cứng
+- Sửa lỗi trùng lặp chuỗi `high_contrast` trong tệp strings.xml
+- Tạo file `rounded_button_background.xml` để làm nền cho các nút chia sẻ
+- Cập nhật ProfileFragment và ThemeUtils để sử dụng RadioGroup cho cài đặt theme (light/dark/system)
+
+### Cải thiện (Enhancement)
+- Cải thiện chế độ tối với các icon thích ứng với màu textColorPrimary theo theme
+- Tối ưu hóa tệp ngôn ngữ để tránh trùng lặp
+
+## [1.0.0] - 2023-12-15
+
 ## [2025-03-24] - Cải thiện xử lý API không có danh mục
 ### Changed
 - Điều chỉnh ApiClient để sử dụng API "everything" thay vì "top-headlines" cho tìm kiếm danh mục

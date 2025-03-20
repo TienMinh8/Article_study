@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.article.R;
 import com.example.article.adapter.NewsAdapter;
 import com.example.article.api.model.NewsArticle;
+import com.example.article.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,17 @@ public class SavedFragment extends Fragment implements NewsAdapter.OnNewsClickLi
         initViews(view);
         setupRecyclerView();
         loadSavedArticles();
+        
+        // Thiết lập click listener cho nút thông báo
+        View btnNotification = view.findViewById(R.id.btnNotification);
+        if (btnNotification != null) {
+            btnNotification.setOnClickListener(v -> {
+                // Gọi đến MainActivity để xử lý hiển thị thông báo
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).showNotifications(v);
+                }
+            });
+        }
     }
     
     private void initViews(View view) {

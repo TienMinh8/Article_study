@@ -79,6 +79,18 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Breaking News Headline Here With Multiple Lines of Text" />
 
+        <ImageButton
+            android:id="@+id/btnShare"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_button_background"
+            android:contentDescription="@string/share"
+            android:src="@drawable/ic_share"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="?android:attr/textColorPrimary" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView> 

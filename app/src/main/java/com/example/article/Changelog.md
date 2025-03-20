@@ -3,6 +3,7 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Removed
+- Loại bỏ mục Thông báo khỏi thanh điều hướng bottom navigation
 - Loại bỏ cơ chế caching trong ApiClient bao gồm memory cache và disk cache
 - Loại bỏ HTTP caching với cache-control headers
 - Loại bỏ cơ chế prefetching dữ liệu và hình ảnh
@@ -12,6 +13,9 @@
 - Đơn giản hóa cách xử lý lỗi mạng
 
 ### Changed
+- Chuyển chức năng Thông báo từ tab riêng thành icon trên thanh công cụ mỗi màn hình
+- Cập nhật MainActivity để hỗ trợ chức năng hiển thị thông báo khi nhấn vào icon thông báo
+- Sửa đổi phương thức showNotifications để điều hướng đến màn hình thông báo thay vì chỉ hiển thị Toast
 - Chuyển đổi từ tìm kiếm theo danh mục sang tìm kiếm theo từ khóa
 - Cập nhật giao diện người dùng để ẩn bớt các thành phần Category không còn sử dụng
 - Cải thiện trải nghiệm tìm kiếm trên màn hình Discover
@@ -33,8 +37,16 @@
 - Cập nhật HomeFragment để cũng giới hạn hiển thị 10 bài viết đề xuất ban đầu
 - Cải thiện chức năng "Xem tất cả" trong HomeFragment để hiển thị tất cả các bài viết có sẵn
 - Tăng hiệu suất tải thêm bài viết trong HomeFragment bằng cách ưu tiên sử dụng bộ nhớ đệm
+- Cập nhật themes.xml với các style mới
+- Cập nhật colors.xml với màu sắc cho chế độ tối/sáng
+- Tăng cường khả năng tiếp cận với kích thước văn bản điều chỉnh được
+- Cải thiện giao diện Profile để hỗ trợ cài đặt người dùng
+- Điều chỉnh MainActivity để phản ánh cài đặt chế độ tối/sáng 
+- Cập nhật giá trị TextView để sử dụng kích thước font thích hợp
 
 ### Added
+- Thêm phương thức `showNotifications` trong MainActivity để xử lý hiển thị thông báo từ icon trên toolbar
+- Thêm click listener cho nút thông báo trong các Fragment chính (Home, Discover, Saved, Profile)
 - Thêm phương thức `getEverything` và `getEverythingPaged` trong ApiClient để hỗ trợ tìm kiếm theo từ khóa
 - Thêm trường `category` vào model NewsArticle để duy trì tương thích với mã nguồn hiện tại
 - Cập nhật tài liệu Help.md với thông tin về cách xử lý khi API không hỗ trợ danh mục
@@ -64,6 +76,15 @@
 - Theo dõi trạng thái tải với các thông báo phù hợp ("Đang tải thêm...", "Không còn kết quả")
 - Thêm tính năng bộ nhớ đệm trong HomeFragment để lưu trữ danh sách đầy đủ và tối ưu hóa tải thêm
 - Cải thiện trải nghiệm người dùng với thông báo số lượng bài viết được tải
+- Thêm chế độ tối/sáng dựa trên cài đặt hệ thống
+- Thêm tùy chọn điều chỉnh kích thước chữ (nhỏ, vừa, lớn, rất lớn)
+- Thêm tùy chọn độ tương phản cao để tăng khả năng tiếp cận
+- Thêm hỗ trợ vùng chạm lớn (tối thiểu 48dp) cho tất cả các phần tử tương tác
+- Thêm lớp ThemeUtils để quản lý chế độ tối/sáng
+- Thêm lớp FontSizeUtils để quản lý kích thước chữ
+- Thêm UI cài đặt trong màn hình Profile
+- Thêm kiểu chữ Sans-serif (cỡ mặc định 16-20pt) 
+- Thêm lưu trữ cài đặt người dùng vào SharedPreferences
 
 ### Fixed
 - Sửa lỗi ứng dụng crash khi API không trả về kết quả theo danh mục

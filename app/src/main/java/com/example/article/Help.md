@@ -4,6 +4,26 @@
 
 Đây là một ứng dụng đọc tin tức hiện đại cho phép người dùng xem các tin tức mới nhất từ khắp nơi trên thế giới. Ứng dụng sử dụng NewsAPI để lấy dữ liệu và hiển thị thông tin một cách trực quan.
 
+## Điều hướng ứng dụng
+
+Ứng dụng có thanh điều hướng ở dưới cùng với 4 mục chính:
+- **Trang chủ**: Hiển thị tin nóng và tin tức đề xuất
+- **Khám phá**: Tìm kiếm và lọc tin tức theo từ khóa hoặc danh mục
+- **Đã lưu**: Xem các bài viết đã được lưu lại để đọc sau
+- **Hồ sơ**: Quản lý thông tin cá nhân và tùy chọn cài đặt
+
+### Thông báo
+Thay vì có một tab riêng cho thông báo, ứng dụng hiển thị biểu tượng thông báo ở góc trên bên phải của mỗi màn hình. Khi nhấn vào biểu tượng này, người dùng sẽ được điều hướng đến màn hình thông báo, nơi hiển thị:
+- Tin tức mới từ các chủ đề đang theo dõi
+- Cập nhật từ ứng dụng
+- Thông báo tương tác
+
+Cách sử dụng:
+1. Nhấn vào biểu tượng thông báo (hình chuông) ở góc trên bên phải của bất kỳ màn hình chính nào
+2. Ứng dụng sẽ điều hướng bạn đến màn hình thông báo
+3. Xem danh sách thông báo và nhấn vào thông báo để xem chi tiết
+4. Sử dụng nút quay lại để trở về màn hình trước đó
+
 ## Các tính năng chính
 
 ### Breaking News Slider
@@ -144,3 +164,43 @@ Người dùng có thể:
 - Nhấn vào thẻ để xem chi tiết bài viết
 - Lọc tin tức theo danh mục trong màn hình Khám phá
 - Lưu hoặc chia sẻ bài viết trực tiếp từ thẻ 
+
+## Tùy chỉnh giao diện
+Ứng dụng hỗ trợ nhiều tùy chọn để điều chỉnh giao diện theo nhu cầu cá nhân của bạn.
+
+### Chế độ tối/sáng
+Ứng dụng hỗ trợ cả chế độ sáng và chế độ tối, tự động theo cài đặt hệ thống hoặc có thể tùy chỉnh thủ công.
+
+**Cách sử dụng:**
+1. Đi tới tab **Hồ sơ** từ thanh điều hướng dưới cùng
+2. Tìm mục "Chế độ tối" trong phần Cài đặt giao diện
+3. Bật công tắc để kích hoạt chế độ tối hoặc tắt để sử dụng chế độ sáng
+4. Thay đổi sẽ được áp dụng ngay lập tức
+
+Chế độ tối giúp giảm mỏi mắt khi đọc tin trong điều kiện ánh sáng yếu và tiết kiệm pin trên các thiết bị có màn hình OLED/AMOLED.
+
+### Điều chỉnh kích thước chữ
+Bạn có thể điều chỉnh kích thước chữ hiển thị trong ứng dụng để phù hợp với nhu cầu cá nhân.
+
+**Có 4 tùy chọn kích thước chữ:**
+- **Nhỏ:** Phù hợp khi bạn muốn hiển thị nhiều nội dung hơn trên màn hình
+- **Vừa (Mặc định):** Kích thước cân bằng phù hợp với hầu hết người dùng
+- **Lớn:** Dễ đọc hơn, phù hợp cho người có thị lực trung bình
+- **Rất lớn:** Kích thước tối đa, phù hợp cho người lớn tuổi hoặc khó khăn về thị lực
+
+**Cách sử dụng:**
+1. Đi tới tab **Hồ sơ** từ thanh điều hướng dưới cùng
+2. Tìm mục "Kích thước chữ" trong phần Cài đặt giao diện
+3. Chọn kích thước phù hợp với nhu cầu của bạn
+4. Khởi động lại ứng dụng để áp dụng thay đổi
+
+### Chế độ tương phản cao
+Ứng dụng cung cấp chế độ tương phản cao cho người dùng có thị lực kém hoặc khó phân biệt màu sắc.
+
+**Cách sử dụng:**
+1. Đi tới tab **Hồ sơ** từ thanh điều hướng dưới cùng
+2. Tìm mục "Độ tương phản cao" trong phần Cài đặt giao diện
+3. Bật công tắc để kích hoạt
+4. Khởi động lại ứng dụng để áp dụng thay đổi
+
+Khi bật chế độ này, ứng dụng sẽ sử dụng màu sắc tương phản cao hơn và loại bỏ các hiệu ứng phức tạp, giúp tăng khả năng đọc cho người khiếm thị. 

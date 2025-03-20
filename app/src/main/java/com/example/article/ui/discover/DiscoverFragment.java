@@ -26,6 +26,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.example.article.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +111,17 @@ public class DiscoverFragment extends Fragment implements NewsAdapter.OnNewsClic
                 getActivity().onBackPressed();
             }
         });
+        
+        // Thiết lập click listener cho nút thông báo
+        View btnNotification = view.findViewById(R.id.btnNotification);
+        if (btnNotification != null) {
+            btnNotification.setOnClickListener(v -> {
+                // Gọi đến MainActivity để xử lý hiển thị thông báo
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).showNotifications(v);
+                }
+            });
+        }
     }
     
     private void setupSwipeRefresh() {
