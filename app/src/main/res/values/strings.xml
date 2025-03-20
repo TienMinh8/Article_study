@@ -40,4 +40,28 @@
     <!-- Notification messages -->
     <string name="notification_title">News Update</string>
     <string name="notification_message">New articles available</string>
+
+    <!-- Categories -->
+    <string name="category_all">All</string>
+    <string name="category_business">Business</string>
+    <string name="category_technology">Technology</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_sports">Sports</string>
+    <string name="category_science">Science</string>
+    <string name="category_health">Health</string>
+    <string name="loading_category">Loading %s news…</string>
+    
+    <!-- Article Details -->
+    <string name="article_image">Article image</string>
+    <string name="share">Share</string>
+    <string name="bookmark">Bookmark</string>
+
+    <!-- Refresh -->
+    <string name="refreshing">Refreshing…</string>
+    <string name="refresh_complete">Refresh complete</string>
+    <string name="pull_to_refresh">Pull to refresh</string>
+    
+    <!-- Load More -->
+    <string name="loading_more">Loading more…</string>
+    <string name="no_more_results">No more results</string>
 </resources>

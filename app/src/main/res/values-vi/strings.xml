@@ -29,4 +29,40 @@
     <string name="no_article_url">Không tìm thấy URL bài viết.</string>
     <string name="load_more">Xem thêm</string>
     <string name="using_sample_data">Đang sử dụng dữ liệu mẫu</string>
+
+    <!-- Network error messages -->
+    <string name="retry">Thử lại</string>
+    <string name="connection_timeout_error">Kết nối hết thời gian. Máy chủ phản hồi quá lâu.</string>
+    <string name="unable_to_resolve_host">Không thể kết nối đến máy chủ tin tức. Vui lòng kiểm tra kết nối internet.</string>
+    <string name="too_many_requests">Quá nhiều yêu cầu. Đã đạt giới hạn truy cập API.</string>
+    <string name="unauthorized_api_key">Lỗi xác thực API key. Vui lòng liên hệ với hỗ trợ.</string>
+    <string name="general_network_error">Lỗi mạng. Vui lòng thử lại sau.</string>
+    
+    <!-- Notification messages -->
+    <string name="notification_title">Cập nhật tin tức</string>
+    <string name="notification_message">Có bài viết mới</string>
+
+    <!-- Categories -->
+    <string name="category_all">Tất cả</string>
+    <string name="category_business">Kinh doanh</string>
+    <string name="category_technology">Công nghệ</string>
+    <string name="category_entertainment">Giải trí</string>
+    <string name="category_sports">Thể thao</string>
+    <string name="category_science">Khoa học</string>
+    <string name="category_health">Sức khỏe</string>
+    <string name="loading_category">Đang tải tin %s…</string>
+    
+    <!-- Article Details -->
+    <string name="article_image">Hình ảnh bài viết</string>
+    <string name="share">Chia sẻ</string>
+    <string name="bookmark">Lưu lại</string>
+
+    <!-- Refresh -->
+    <string name="refreshing">Đang tải lại…</string>
+    <string name="refresh_complete">Tải lại hoàn tất</string>
+    <string name="pull_to_refresh">Kéo để làm mới</string>
+    
+    <!-- Load More -->
+    <string name="loading_more">Đang tải thêm…</string>
+    <string name="no_more_results">Không còn kết quả</string>
 </resources> 

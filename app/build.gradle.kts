@@ -49,6 +49,11 @@ dependencies {
     // Facebook Shimmer for loading effects
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     
+    // SwipeRefreshLayout for pull-to-refresh feature
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    implementation("com.facebook.android:facebook-android-sdk:latest.release")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

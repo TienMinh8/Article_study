@@ -4,22 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="12dp">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/article_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/backgrounds/scenic" />
@@ -57,6 +55,18 @@
             tools:text="Source" />
 
         <TextView
+            android:id="@+id/publishedAtTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/sourceTextView"
+            app:layout_constraintStart_toEndOf="@+id/sourceTextView"
+            app:layout_constraintTop_toTopOf="@+id/sourceTextView"
+            tools:text="2 hours ago" />
+
+        <TextView
             android:id="@+id/descriptionTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -70,6 +80,32 @@
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/sourceTextView"
             tools:text="This is a description of the news article that can span multiple lines and provide additional context about the article." />
+
+        <ImageButton
+            android:id="@+id/btnBookmark"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/bookmark"
+            android:src="@drawable/ic_bookmark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTextView"
+            app:tint="@android:color/darker_gray" />
+
+        <ImageButton
+            android:id="@+id/btnShare"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/share"
+            android:src="@drawable/ic_share"
+            app:layout_constraintBottom_toBottomOf="@+id/btnBookmark"
+            app:layout_constraintEnd_toStartOf="@+id/btnBookmark"
+            app:layout_constraintTop_toTopOf="@+id/btnBookmark"
+            app:tint="@android:color/darker_gray" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

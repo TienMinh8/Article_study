@@ -42,6 +42,13 @@ public interface ApiService {
             @Query("apiKey") String apiKey
     );
 
+    @GET("top-headlines")
+    Call<NewsResponse> getTopHeadlinesByCategory(
+            @Query("country") String country,
+            @Query("category") String category,
+            @Query("apiKey") String apiKey
+    );
+
     @GET
     Call<NewsResponse> getCustomUrl(@Url String url);
 

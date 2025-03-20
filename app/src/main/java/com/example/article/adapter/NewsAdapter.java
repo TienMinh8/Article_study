@@ -32,6 +32,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String currentQuery = "trending"; // Từ khóa mặc định
     private int currentPage = 1;
     private static final int ITEMS_PER_PAGE = 10;
+    private static final String TAG = "NewsAdapter";
 
     public NewsAdapter(OnNewsClickListener listener) {
         this.newsList = new ArrayList<>();
@@ -112,8 +113,12 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return newsList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
+    /**
+     * Thiết lập danh sách tin tức
+     * @param newsList Danh sách tin tức mới
+     */
     public void setNewsList(List<NewsArticle> newsList) {
-        this.newsList = new ArrayList<>(newsList);
+        this.newsList = newsList != null ? newsList : new ArrayList<>();
         notifyDataSetChanged();
     }
     
@@ -227,8 +232,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void setDummyData() {
         newsList.clear();
         
-        // Create dummy data for testing
-        for (int i = 1; i <= 5; i++) {
+        // Create dummy data for testing - 10 items
+        for (int i = 1; i <= 10; i++) {
             NewsArticle article = new NewsArticle();
             article.setTitle("Sample Article Title " + i + " - This is a longer title to test how wrapping works in the layout");
             article.setDescription("This is a sample description for article " + i + ". It contains more text to display how the description field will appear in the application interface.");
@@ -243,6 +248,26 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         
         notifyDataSetChanged();
+    }
+
+    /**
+     * Lấy danh sách tin tức hiện tại
+     * @return Danh sách tin tức
+     */
+    public List<NewsArticle> getCurrentNewsList() {
+        return newsList;
+    }
+    
+    /**
+     * Thêm nhiều bài viết vào danh sách hiện tại
+     * @param moreItems Danh sách bài viết cần thêm
+     */
+    public void addMoreItems(List<NewsArticle> moreItems) {
+        if (moreItems != null && !moreItems.isEmpty()) {
+            int positionStart = newsList.size();
+            newsList.addAll(moreItems);
+            notifyItemRangeInserted(positionStart, moreItems.size());
+        }
     }
 
     static class NewsViewHolder extends RecyclerView.ViewHolder {

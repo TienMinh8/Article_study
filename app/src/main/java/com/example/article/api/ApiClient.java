@@ -1,6 +1,8 @@
 package com.example.article.api;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.example.article.R;
@@ -18,7 +20,9 @@ import java.util.Locale;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.CacheControl;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -266,6 +270,67 @@ public class ApiClient {
         calendar.add(Calendar.DAY_OF_YEAR, -days);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         return dateFormat.format(calendar.getTime());
+    }
+
+    /**
+     * Lấy tin tức hàng đầu theo danh mục
+     * @param category Danh mục tin tức (business, technology, entertainment, sports, science, health, general)
+     * @param callback Callback để trả về kết quả
+     */
+    public void getTopHeadlines(String category, final ApiCallback<List<NewsArticle>> callback) {
+        try {
+            // Gọi API lấy tin tức theo danh mục
+            Log.d(TAG, "Fetching top headlines for category: " + category);
+            
+            String countryCode = "us"; // Mặc định lấy tin tức của Mỹ
+            Call<NewsResponse> call = apiService.getTopHeadlines(countryCode, apiKey);
+            
+            if (!category.equals("general")) {
+                // Nếu có category cụ thể, thêm vào parameters
+                call = apiService.getTopHeadlinesByCategory(countryCode, category, apiKey);
+            }
+            
+            call.enqueue(new Callback<NewsResponse>() {
+                @Override
+                public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<NewsArticle> articles = response.body().getArticles();
+                        
+                        if (articles != null && !articles.isEmpty()) {
+                            Log.d(TAG, "Top headline articles fetched: " + articles.size() + " for category: " + category);
+                            callback.onSuccess(articles);
+                        } else {
+                            Log.d(TAG, "No top headline articles found for category: " + category);
+                            // Gọi onSuccess với danh sách trống để tầng trên có thể quyết định xử lý
+                            callback.onSuccess(new ArrayList<>());
+                        }
+                    } else {
+                        String errorBody = "";
+                        try {
+                            if (response.errorBody() != null) {
+                                errorBody = response.errorBody().string();
+                            }
+                        } catch (IOException e) {
+                            // Ignore
+                        }
+                        
+                        String errorMessage = parseErrorResponse(response.code(), errorBody);
+                        Log.e(TAG, "Error fetching top headlines: " + response.code() + " - " + errorBody);
+                        callback.onError(errorMessage);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<NewsResponse> call, Throwable t) {
+                    String errorMessage = "Network Error: " + t.getMessage();
+                    Log.e(TAG, "Network error fetching top headlines: " + t.getMessage());
+                    callback.onError(errorMessage);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in getTopHeadlines: " + e.getMessage());
+            callback.onError("Error: " + e.getMessage());
+        }
     }
 
     // Interface để trả về kết quả

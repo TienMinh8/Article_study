@@ -16,14 +16,14 @@
 Ví dụ: ionicons: ^0.2.2
 
 ## 📱 Yêu Cầu UI/UX
-- ❌ Thanh điều hướng dưới với 5 tab: Trang chủ, Khám phá, Đã lưu, Thông báo, Cá nhân
+- ✅ Thanh điều hướng dưới với 5 tab: Trang chủ, Khám phá, Đã lưu, Thông báo, Cá nhân
 - ✅ Trình chiếu cho tin nổi bật (40% chiều cao màn hình)
   - ✅ Cài đặt ViewPager2 cho hiển thị tin nổi bật
   - ✅ Thêm chỉ báo trang (page indicator) dạng chấm tròn
   - ✅ Tùy chỉnh hiệu ứng chuyển trang với margin và thu nhỏ
   - ✅ Tự động chuyển trang
-- ❌ Bố cục tin tức dạng thẻ với khoảng cách phù hợp (12dp)
-- ❌ Kéo để làm mới với hiệu ứng tải
+- ✅ Bố cục tin tức dạng thẻ với khoảng cách phù hợp (12dp)
+- ✅ Kéo để làm mới với hiệu ứng tải
 - ❌ Chế độ tối/sáng dựa trên cài đặt hệ thống
 - ❌ Kiểu chữ: Sans-serif (cỡ mặc định 16-20pt)
 - ❌ Cử chỉ vuốt để điều hướng và hành động
@@ -97,7 +97,7 @@ Ví dụ: ionicons: ^0.2.2
 
 *Chi tiết tại: [Performance_Instructions.md](Performance_Instructions.md)*
 
-## �� Hỗ Trợ Ngôn Ngữ
+## 🌐 Hỗ Trợ Ngôn Ngữ
 - ⏳ Cơ sở hạ tầng đa ngôn ngữ
   - ✅ Hỗ trợ tiếng Việt
   - ✅ Hỗ trợ tiếng Anh (mặc định)
