@@ -559,8 +559,7 @@ public class HomeFragment extends Fragment implements NewsAdapter.OnNewsClickLis
     @Override
     public void onNewsClick(NewsArticle article) {
         Bundle bundle = new Bundle();
-        // Chuyển toàn bộ article object dưới dạng JSON
-        bundle.putString("article", new Gson().toJson(article));
+        bundle.putString("url", article.getUrl());
         Navigation.findNavController(requireView()).navigate(R.id.action_home_to_detail, bundle);
     }
 
@@ -589,12 +588,9 @@ public class HomeFragment extends Fragment implements NewsAdapter.OnNewsClickLis
     @Override
     public void onBreakingNewsClick(NewsArticle article) {
         // Xử lý khi người dùng click vào tin tức nổi bật
-        Toast.makeText(requireContext(), "Clicked breaking: " + article.getTitle(), Toast.LENGTH_SHORT).show();
-        
-        // Chuyển tới màn hình chi tiết nếu có
         if (Navigation.findNavController(requireView()).getCurrentDestination().getId() == R.id.navigation_home) {
             Bundle args = new Bundle();
-            args.putString("articleUrl", article.getUrl());
+            args.putString("url", article.getUrl());
             Navigation.findNavController(requireView()).navigate(R.id.action_home_to_detail, args);
         }
     }

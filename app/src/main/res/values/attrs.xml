@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BaseTextView">
+        <attr name="textType" format="enum">
+            <enum name="title" value="0"/>
+            <enum name="subtitle" value="1"/>
+            <enum name="body" value="2"/>
+            <enum name="caption" value="3"/>
+        </attr>
+    </declare-styleable>
+</resources> 

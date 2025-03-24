@@ -93,4 +93,7 @@
     <string name="restart_to_apply_font_size">Khởi động lại ứng dụng để áp dụng cỡ chữ mới</string>
     <string name="restart_to_apply_high_contrast">Khởi động lại ứng dụng để áp dụng chế độ tương phản</string>
     <!-- Profile Settings End -->
+
+    <string name="font_size_changed">Đã cập nhật cỡ chữ</string>
+    <string name="error_loading_content">Lỗi tải nội dung: %s</string>
 </resources> 

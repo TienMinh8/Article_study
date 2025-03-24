@@ -112,7 +112,7 @@ public class SavedFragment extends Fragment implements NewsAdapter.OnNewsClickLi
     @Override
     public void onNewsClick(NewsArticle article) {
         Bundle bundle = new Bundle();
-        bundle.putString("articleUrl", article.getUrl());
+        bundle.putString("url", article.getUrl());
         Navigation.findNavController(requireView())
                 .navigate(R.id.action_saved_to_detail, bundle);
     }

@@ -1,5 +1,6 @@
 package com.example.article.ui.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.article.R;
+import com.example.article.utils.FontSizeUtils;
 import com.example.article.utils.ThemeUtils;
 
 public class ProfileFragment extends Fragment {
@@ -61,12 +63,12 @@ public class ProfileFragment extends Fragment {
         // Listener cho thay đổi theme
         themeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             int themeMode;
-            if (checkedId == R.id.radioSystem) {
-                themeMode = ThemeUtils.MODE_SYSTEM;
-            } else if (checkedId == R.id.radioLight) {
+            if (checkedId == R.id.radioLight) {
                 themeMode = ThemeUtils.MODE_LIGHT;
-            } else {
+            } else if (checkedId == R.id.radioDark) {
                 themeMode = ThemeUtils.MODE_DARK;
+            } else {
+                themeMode = ThemeUtils.MODE_SYSTEM;
             }
             ThemeUtils.saveThemeMode(requireContext(), themeMode);
         });
@@ -75,20 +77,27 @@ public class ProfileFragment extends Fragment {
         fontSizeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             int fontSize;
             if (checkedId == R.id.radioSmall) {
-                fontSize = ThemeUtils.FONT_SIZE_SMALL;
-            } else if (checkedId == R.id.radioMedium) {
-                fontSize = ThemeUtils.FONT_SIZE_MEDIUM;
+                fontSize = FontSizeUtils.FONT_SIZE_SMALL;
+            } else if (checkedId == R.id.radioLarge) {
+                fontSize = FontSizeUtils.FONT_SIZE_LARGE;
+            } else if (checkedId == R.id.radioExtraLarge) {
+                fontSize = FontSizeUtils.FONT_SIZE_EXTRA_LARGE;
             } else {
-                fontSize = ThemeUtils.FONT_SIZE_LARGE;
+                fontSize = FontSizeUtils.FONT_SIZE_MEDIUM;
             }
-            ThemeUtils.saveFontSize(requireContext(), fontSize);
-            Toast.makeText(getContext(), R.string.restart_to_apply_font_size, Toast.LENGTH_SHORT).show();
+            
+            // Lưu cài đặt mới
+            FontSizeUtils.saveFontSize(requireContext(), fontSize);
+            
+            // Thông báo cho người dùng biết thay đổi đã được áp dụng
+            Toast.makeText(requireContext(), 
+                getString(R.string.font_size_changed), 
+                Toast.LENGTH_SHORT).show();
         });
         
         // Listener cho high contrast mode
         highContrastSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             ThemeUtils.saveHighContrastMode(requireContext(), isChecked);
-            Toast.makeText(getContext(), R.string.restart_to_apply_high_contrast, Toast.LENGTH_SHORT).show();
         });
     }
     
@@ -108,13 +117,16 @@ public class ProfileFragment extends Fragment {
         }
         
         // Áp dụng cài đặt font size hiện tại
-        int fontSize = ThemeUtils.getFontSize(requireContext());
+        int fontSize = FontSizeUtils.getFontSize(requireContext());
         switch (fontSize) {
-            case ThemeUtils.FONT_SIZE_SMALL:
+            case FontSizeUtils.FONT_SIZE_SMALL:
                 fontSizeRadioGroup.check(R.id.radioSmall);
                 break;
-            case ThemeUtils.FONT_SIZE_LARGE:
+            case FontSizeUtils.FONT_SIZE_LARGE:
                 fontSizeRadioGroup.check(R.id.radioLarge);
+                break;
+            case FontSizeUtils.FONT_SIZE_EXTRA_LARGE:
+                fontSizeRadioGroup.check(R.id.radioExtraLarge);
                 break;
             default:
                 fontSizeRadioGroup.check(R.id.radioMedium);

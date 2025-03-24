@@ -46,6 +46,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.code.gson:gson:2.10.1")
     
+    // Jsoup for HTML parsing
+    implementation("org.jsoup:jsoup:1.17.2")
+    
     // Facebook Shimmer for loading effects
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     

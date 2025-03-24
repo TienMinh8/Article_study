@@ -23,6 +23,11 @@
 - Cập nhật giao diện nút bookmark để hiển thị trạng thái đã lưu/chưa lưu
 - Tối ưu hóa việc lưu trữ bài viết sử dụng SharedPreferences
 - Cải thiện UX khi tương tác với các nút chia sẻ và bookmark
+- Improved article detail page loading performance
+- Replaced WebView with native content display
+- Added proper error handling and loading states
+- Enhanced UI with featured image and better text formatting
+- Implemented offline mode handling
 
 ### Technical
 - Thêm class ArticleUtils để quản lý việc lưu trữ và chia sẻ bài viết

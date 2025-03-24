@@ -114,7 +114,16 @@ public class ThemeUtils {
      * @param baseSize Kích thước cơ bản (SP)
      */
     public static void applyAdjustedTextSize(Context context, TextView textView, float baseSize) {
-        float scaledSize = FontSizeUtils.getScaledFontSize(context, baseSize);
+        float scaledSize = FontSizeUtils.getScaledSize(context, baseSize);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
+    }
+
+    public static int getAdjustedFontSizeInPixels(Context context, float baseSize) {
+        float scaledSize = FontSizeUtils.getScaledSize(context, baseSize);
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_SP,
+                scaledSize,
+                context.getResources().getDisplayMetrics()
+        );
     }
 } 

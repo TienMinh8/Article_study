@@ -106,4 +106,6 @@
     <string name="all_deleted">Đã xóa tất cả bài viết</string>
     <string name="saved">Đã lưu bài viết</string>
     <string name="save_article">Lưu bài viết</string>
+    <string name="font_size_changed">Font size has been updated</string>
+    <string name="error_loading_content">Error loading content: %s</string>
 </resources>

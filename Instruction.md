@@ -82,7 +82,7 @@ Ví dụ: ionicons: ^0.2.2
 
 ## 👴 Khả Năng Tiếp Cận
 - ❌ Vùng chạm lớn (tối thiểu 48dp)
-- ❌ Kích thước văn bản điều chỉnh được
+- ✅ Kích thước văn bản điều chỉnh được
 - ❌ Tùy chọn độ tương phản cao
 - ❌ Tương thích với trình đọc màn hình
 - ❌ Tùy chọn bố cục đơn giản hóa

@@ -328,9 +328,8 @@ public class DiscoverFragment extends Fragment implements NewsAdapter.OnNewsClic
 
     @Override
     public void onNewsClick(NewsArticle article) {
-        // Chuyển đến màn hình chi tiết
         Bundle bundle = new Bundle();
-        bundle.putString("articleUrl", article.getUrl());
+        bundle.putString("url", article.getUrl());
         Navigation.findNavController(requireView())
                 .navigate(R.id.action_discover_to_detail, bundle);
     }
