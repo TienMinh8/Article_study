@@ -1,9 +1,11 @@
 package com.example.article.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +17,9 @@ import com.example.article.R;
 import com.example.article.api.ApiClient;
 import com.example.article.api.model.NewsArticle;
 import com.example.article.utils.DateUtils;
+import com.example.article.utils.ArticleUtils;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +45,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface OnNewsClickListener {
         void onNewsClick(NewsArticle article);
+        void onShareClick(NewsArticle article);
+        void onBookmarkClick(NewsArticle article);
     }
 
     @NonNull
@@ -66,7 +72,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             NewsViewHolder viewHolder = (NewsViewHolder) holder;
             
             viewHolder.titleTextView.setText(article.getTitle());
-            viewHolder.sourceTextView.setText(article.getSource().getName());
+            
+            // Kiểm tra và hiển thị source nếu có
+            if (article.getSource() != null && article.getSource().getName() != null) {
+                viewHolder.sourceTextView.setText(article.getSource().getName());
+                viewHolder.sourceTextView.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.sourceTextView.setVisibility(View.GONE);
+            }
             
             // Định dạng thời gian
             String formattedDate = DateUtils.formatPublishedDate(article.getPublishedAt());
@@ -91,12 +104,32 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 viewHolder.imageView.setImageResource(R.drawable.placeholder_image);
             }
             
-            // Set click listener
+            // Set click listeners
             viewHolder.itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onNewsClick(article);
                 }
             });
+
+            // Xử lý sự kiện click nút share
+            viewHolder.btnShare.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onShareClick(article);
+                }
+            });
+
+            // Xử lý sự kiện click nút bookmark
+            viewHolder.btnBookmark.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onBookmarkClick(article);
+                }
+            });
+
+            // Cập nhật trạng thái bookmark
+            Context context = viewHolder.itemView.getContext();
+            boolean isSaved = ArticleUtils.isArticleSaved(context, article);
+            viewHolder.btnBookmark.setIcon(context.getDrawable(isSaved ? 
+                R.drawable.ic_bookmark_filled : R.drawable.ic_bookmark_border));
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.shimmerFrameLayout.startShimmer();
@@ -240,6 +273,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             article.setUrlToImage("");
             article.setPublishedAt("2023-06-15T" + (10 + i) + ":00:00Z");
             
+            // Khởi tạo Source object
             NewsArticle.Source source = new NewsArticle.Source();
             source.setName("Sample News " + i);
             article.setSource(source);
@@ -271,15 +305,21 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     static class NewsViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTextView, descriptionTextView, sourceTextView;
         ImageView imageView;
+        TextView titleTextView;
+        TextView sourceTextView;
+        TextView descriptionTextView;
+        MaterialButton btnShare;
+        MaterialButton btnBookmark;
 
-        NewsViewHolder(@NonNull View itemView) {
+        public NewsViewHolder(@NonNull View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.titleTextView);
-            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
-            sourceTextView = itemView.findViewById(R.id.sourceTextView);
             imageView = itemView.findViewById(R.id.imageView);
+            titleTextView = itemView.findViewById(R.id.titleTextView);
+            sourceTextView = itemView.findViewById(R.id.sourceTextView);
+            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
+            btnShare = itemView.findViewById(R.id.btnShare);
+            btnBookmark = itemView.findViewById(R.id.btnBookmark);
         }
     }
     

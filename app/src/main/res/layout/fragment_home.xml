@@ -129,16 +129,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvViewAll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/view_all"
-                        android:textColor="@android:color/holo_blue_dark"
-                        app:layout_constraintBottom_toBottomOf="@+id/tvBreakingNews"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tvBreakingNews" />
-
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/viewPagerBreakingNews"
                         android:layout_width="match_parent"

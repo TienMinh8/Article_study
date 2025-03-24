@@ -1,5 +1,6 @@
 package com.example.article.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -7,7 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,11 +28,14 @@ import com.example.article.adapter.BreakingNewsAdapter;
 import com.example.article.adapter.NewsAdapter;
 import com.example.article.api.ApiClient;
 import com.example.article.api.model.NewsArticle;
+import com.example.article.utils.ArticleUtils;
 import com.example.article.utils.ItemSpacingDecoration;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.example.article.utils.NetworkUtils;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -232,11 +238,7 @@ public class HomeFragment extends Fragment implements NewsAdapter.OnNewsClickLis
             }
         });
         
-        // Thiết lập các click listener cho các thành phần khác
-        view.findViewById(R.id.tvViewAll).setOnClickListener(v -> 
-                Toast.makeText(requireContext(), R.string.view_all, Toast.LENGTH_SHORT).show());
-        
-        // Cập nhật click listener cho nút Xem tất cả ở phần đề xuất để hiển thị tất cả các bài viết
+        // Cập nhật click listener cho nút Xem tất cả ở phần đề xuất
         view.findViewById(R.id.tvViewAllRecommendation).setOnClickListener(v -> {
             if (fullResultList != null && !fullResultList.isEmpty()) {
                 // Hiển thị tất cả bài viết từ danh sách đầy đủ
@@ -434,11 +436,6 @@ public class HomeFragment extends Fragment implements NewsAdapter.OnNewsClickLis
                                     btnLoadMore.setEnabled(true);
                                     btnLoadMore.setVisibility(View.VISIBLE);
                                 }
-                                
-                                View tvViewAll = getView().findViewById(R.id.tvViewAllRecommendation);
-                                if (tvViewAll != null) {
-                                    tvViewAll.setVisibility(View.VISIBLE);
-                                }
                             }
                         } else {
                             // Ẩn nút "Xem thêm" nếu không có đủ item
@@ -561,15 +558,32 @@ public class HomeFragment extends Fragment implements NewsAdapter.OnNewsClickLis
 
     @Override
     public void onNewsClick(NewsArticle article) {
-        // Xử lý khi người dùng click vào tin tức đề xuất
-        Toast.makeText(requireContext(), "Clicked: " + article.getTitle(), Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        // Chuyển toàn bộ article object dưới dạng JSON
+        bundle.putString("article", new Gson().toJson(article));
+        Navigation.findNavController(requireView()).navigate(R.id.action_home_to_detail, bundle);
+    }
+
+    @Override
+    public void onShareClick(NewsArticle article) {
+        ArticleUtils.shareArticle(requireContext(), article);
+    }
+
+    @Override
+    public void onBookmarkClick(NewsArticle article) {
+        Context context = requireContext();
+        boolean isSaved = ArticleUtils.isArticleSaved(context, article);
         
-        // Chuyển tới màn hình chi tiết nếu có
-        if (Navigation.findNavController(requireView()).getCurrentDestination().getId() == R.id.navigation_home) {
-            Bundle args = new Bundle();
-            args.putString("articleUrl", article.getUrl());
-            Navigation.findNavController(requireView()).navigate(R.id.action_home_to_detail, args);
+        if (isSaved) {
+            ArticleUtils.unsaveArticle(context, article);
+            Toast.makeText(context, "Đã xóa khỏi danh sách đã lưu", Toast.LENGTH_SHORT).show();
+        } else {
+            ArticleUtils.saveArticle(context, article);
+            Toast.makeText(context, "Đã thêm vào danh sách đã lưu", Toast.LENGTH_SHORT).show();
         }
+        
+        // Cập nhật lại adapter để thay đổi icon bookmark
+        newsAdapter.notifyDataSetChanged();
     }
 
     @Override

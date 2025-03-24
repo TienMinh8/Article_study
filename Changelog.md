@@ -12,6 +12,36 @@
 - Cải thiện chế độ tối với các icon thích ứng với màu textColorPrimary theo theme
 - Tối ưu hóa tệp ngôn ngữ để tránh trùng lặp
 
+### Added
+- Chức năng chia sẻ bài viết
+- Chức năng lưu bài viết yêu thích
+- Quản lý danh sách bài viết đã lưu
+- Hiển thị trạng thái bookmark cho mỗi bài viết
+- Thông báo khi thêm/xóa bài viết khỏi danh sách đã lưu
+
+### Changed
+- Cập nhật giao diện nút bookmark để hiển thị trạng thái đã lưu/chưa lưu
+- Tối ưu hóa việc lưu trữ bài viết sử dụng SharedPreferences
+- Cải thiện UX khi tương tác với các nút chia sẻ và bookmark
+
+### Technical
+- Thêm class ArticleUtils để quản lý việc lưu trữ và chia sẻ bài viết
+- Cập nhật NewsAdapter để xử lý các sự kiện click
+- Tích hợp chức năng chia sẻ và lưu vào các fragment
+
+### Performance Improvements
+- Tối ưu network timeout và caching
+  - Tăng kích thước cache lên 50MB
+  - Giảm timeout kết nối xuống 10 giây
+  - Thêm retry mechanism tự động (3 lần)
+  - Cải thiện offline support với cache 7 ngày
+  - Thêm logging cho debug network issues
+
+### Fixed
+- Sửa lỗi timeout khi load bài viết
+- Cải thiện xử lý lỗi mạng
+- Tối ưu thời gian phản hồi API
+
 ## [1.0.0] - 2023-12-15
 
 ## [2025-03-24] - Cải thiện xử lý API không có danh mục

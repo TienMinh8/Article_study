@@ -90,3 +90,19 @@
 - **Phương thức chính**: 
   - formatDate: Định dạng ngày tháng theo định dạng mong muốn
   - getTimeAgo: Tính toán thời gian trôi qua (ví dụ: "2 giờ trước")
+
+### NetworkUtils
+**Chức năng chính**: Quản lý network, caching và xử lý lỗi mạng
+- `init(Context)`: Khởi tạo OkHttpClient và cache
+- `getClient()`: Lấy instance của OkHttpClient đã được cấu hình
+- `isNetworkAvailable()`: Kiểm tra kết nối mạng
+- `clearCache()`: Xóa cache
+- `showNetworkError()`: Hiển thị thông báo lỗi mạng
+- `executeWithRetry()`: Thực thi request với retry mechanism
+
+**Cấu hình chính**:
+- Cache size: 50MB
+- Connect timeout: 10s
+- Read/Write timeout: 15s
+- Max retries: 3
+- Cache validity: 5m (new) / 7d (stale)

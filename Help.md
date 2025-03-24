@@ -222,3 +222,26 @@ Người dùng có thể điều chỉnh kích thước chữ toàn bộ ứng d
 
 ### Chế độ Tương phản cao
 Tăng độ tương phản giữa văn bản và nền, giúp người dùng cao tuổi hoặc có vấn đề về thị lực đọc dễ dàng hơn.
+
+## Chia Sẻ Bài Viết
+- Nhấn vào biểu tượng chia sẻ (share) trên bài viết bạn muốn chia sẻ
+- Chọn ứng dụng bạn muốn sử dụng để chia sẻ (ví dụ: Email, WhatsApp, Facebook, v.v.)
+- Nội dung chia sẻ sẽ bao gồm tiêu đề, mô tả và đường dẫn đến bài viết
+
+## Lưu Bài Viết
+- Nhấn vào biểu tượng bookmark trên bài viết để lưu/bỏ lưu
+- Biểu tượng bookmark sẽ chuyển sang trạng thái đã lưu khi bài viết được thêm vào danh sách
+- Bạn sẽ nhận được thông báo xác nhận khi thêm hoặc xóa bài viết khỏi danh sách đã lưu
+
+## Xem Bài Viết Đã Lưu
+1. Chuyển đến tab "Đã Lưu" trong thanh điều hướng
+2. Tại đây bạn có thể:
+   - Xem danh sách các bài viết đã lưu
+   - Nhấn vào bài viết để đọc chi tiết
+   - Chia sẻ bài viết đã lưu
+   - Xóa bài viết khỏi danh sách đã lưu bằng cách nhấn vào biểu tượng bookmark
+
+## Lưu Ý
+- Các bài viết đã lưu sẽ được giữ lại ngay cả khi bạn đóng ứng dụng
+- Bạn có thể truy cập các bài viết đã lưu mà không cần kết nối internet
+- Không có giới hạn số lượng bài viết có thể lưu

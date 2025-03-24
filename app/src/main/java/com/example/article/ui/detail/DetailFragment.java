@@ -9,6 +9,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,11 +21,17 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.article.R;
+import com.example.article.api.model.NewsArticle;
+import com.example.article.utils.ArticleUtils;
+import com.google.gson.Gson;
 
 public class DetailFragment extends Fragment {
 
     private WebView webView;
     private ProgressBar progressBar;
+    private ImageButton btnBookmark;
+    private ImageButton btnShare;
+    private NewsArticle currentArticle;
     private TextView tvNoInternet;
     private Toolbar toolbar;
     private String articleUrl;
@@ -52,9 +59,6 @@ public class DetailFragment extends Fragment {
         // Khởi tạo views
         initViews(view);
         
-        // Thiết lập toolbar
-        setupToolbar();
-        
         // Thiết lập WebView
         setupWebView();
         
@@ -65,15 +69,28 @@ public class DetailFragment extends Fragment {
     private void initViews(View view) {
         webView = view.findViewById(R.id.webView);
         progressBar = view.findViewById(R.id.progressBar);
+        btnBookmark = view.findViewById(R.id.btnBookmark);
+        btnShare = view.findViewById(R.id.btnShare);
         tvNoInternet = view.findViewById(R.id.tvNoInternet);
         toolbar = view.findViewById(R.id.toolbar);
-    }
-    
-    private void setupToolbar() {
+        TextView toolbarTitle = view.findViewById(R.id.toolbarTitle);
+
+        // Setup toolbar navigation
         toolbar.setNavigationOnClickListener(v -> {
-            // Quay lại màn hình trước đó
-            Navigation.findNavController(requireView()).navigateUp();
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
         });
+
+        // Share button
+        btnShare.setOnClickListener(v -> {
+            if (currentArticle != null) {
+                ArticleUtils.shareArticle(requireContext(), currentArticle);
+            }
+        });
+
+        // Bookmark button
+        btnBookmark.setOnClickListener(v -> toggleBookmark());
     }
     
     private void setupWebView() {
@@ -125,12 +142,36 @@ public class DetailFragment extends Fragment {
     }
     
     private void loadArticle() {
-        if (articleUrl != null && !articleUrl.isEmpty()) {
-            webView.loadUrl(articleUrl);
-        } else {
-            tvNoInternet.setText(R.string.no_article_url);
-            tvNoInternet.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
+        if (getArguments() != null) {
+            // Lấy toàn bộ article object từ arguments
+            String articleJson = getArguments().getString("article");
+            if (articleJson != null) {
+                currentArticle = new Gson().fromJson(articleJson, NewsArticle.class);
+                if (currentArticle != null && currentArticle.getUrl() != null) {
+                    webView.loadUrl(currentArticle.getUrl());
+                    updateBookmarkIcon();
+                }
+            }
+        }
+    }
+    
+    private void toggleBookmark() {
+        if (currentArticle != null && getContext() != null) {
+            if (ArticleUtils.isArticleSaved(getContext(), currentArticle)) {
+                ArticleUtils.unsaveArticle(getContext(), currentArticle);
+                Toast.makeText(getContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
+            } else {
+                ArticleUtils.saveArticle(getContext(), currentArticle);
+                Toast.makeText(getContext(), R.string.saved, Toast.LENGTH_SHORT).show();
+            }
+            updateBookmarkIcon();
+        }
+    }
+
+    private void updateBookmarkIcon() {
+        if (currentArticle != null && getContext() != null && btnBookmark != null) {
+            boolean isSaved = ArticleUtils.isArticleSaved(getContext(), currentArticle);
+            btnBookmark.setImageResource(isSaved ? R.drawable.ic_bookmark_filled : R.drawable.ic_bookmark_border);
         }
     }
     

@@ -1,5 +1,6 @@
 package com.example.article.ui.discover;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.example.article.MainActivity;
+import com.example.article.utils.ArticleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -326,13 +328,33 @@ public class DiscoverFragment extends Fragment implements NewsAdapter.OnNewsClic
 
     @Override
     public void onNewsClick(NewsArticle article) {
-        // Xử lý khi người dùng click vào tin tức
-        if (article != null) {
-            // Chuyển tới màn hình chi tiết
-            Bundle args = new Bundle();
-            args.putString("articleUrl", article.getUrl());
-            Navigation.findNavController(requireView()).navigate(R.id.action_discover_to_detail, args);
+        // Chuyển đến màn hình chi tiết
+        Bundle bundle = new Bundle();
+        bundle.putString("articleUrl", article.getUrl());
+        Navigation.findNavController(requireView())
+                .navigate(R.id.action_discover_to_detail, bundle);
+    }
+
+    @Override
+    public void onShareClick(NewsArticle article) {
+        ArticleUtils.shareArticle(requireContext(), article);
+    }
+
+    @Override
+    public void onBookmarkClick(NewsArticle article) {
+        Context context = requireContext();
+        boolean isSaved = ArticleUtils.isArticleSaved(context, article);
+        
+        if (isSaved) {
+            ArticleUtils.unsaveArticle(context, article);
+            Toast.makeText(context, "Đã xóa khỏi danh sách đã lưu", Toast.LENGTH_SHORT).show();
+        } else {
+            ArticleUtils.saveArticle(context, article);
+            Toast.makeText(context, "Đã thêm vào danh sách đã lưu", Toast.LENGTH_SHORT).show();
         }
+        
+        // Cập nhật lại adapter để thay đổi icon bookmark
+        newsAdapter.notifyDataSetChanged();
     }
 
     /**

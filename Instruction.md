@@ -24,8 +24,8 @@ Ví dụ: ionicons: ^0.2.2
   - ✅ Tự động chuyển trang
 - ✅ Bố cục tin tức dạng thẻ với khoảng cách phù hợp (12dp)
 - ✅ Kéo để làm mới với hiệu ứng tải
-- ❌ Chế độ tối/sáng dựa trên cài đặt hệ thống
-- ❌ Kiểu chữ: Sans-serif (cỡ mặc định 16-20pt)
+- ✅ Chế độ tối/sáng dựa trên cài đặt hệ thống
+- ✅ Kiểu chữ: Sans-serif (cỡ mặc định 16-20pt)
 - ❌ Cử chỉ vuốt để điều hướng và hành động
 
 *Chi tiết tại: [UI_Instructions.md](UI_Instructions.md)*
@@ -90,8 +90,13 @@ Ví dụ: ionicons: ^0.2.2
 *Chi tiết tại: [Accessibility_Instructions.md](Accessibility_Instructions.md)*
 
 ## 🔋 Hiệu Suất
-- ❌ Tải lười biếng cho hình ảnh
-- ❌ Lưu trữ tạm phản hồi API
+- ✅ Tải lười biếng cho hình ảnh
+- ✅ Lưu trữ tạm phản hồi API
+  - ✅ Cache size: 50MB
+  - ✅ Cache mới: 5 phút
+  - ✅ Cache cũ: 7 ngày (offline mode)
+  - ✅ Tự động retry khi lỗi mạng (3 lần)
+  - ✅ Timeout tối ưu (10s connect, 15s read/write)
 - ❌ Tải trước nội dung có khả năng cần đến
 - ❌ Đồng bộ hóa nền cho đọc ngoại tuyến
 

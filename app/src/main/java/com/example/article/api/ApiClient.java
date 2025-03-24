@@ -5,10 +5,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.example.article.R;
 import com.example.article.api.model.NewsArticle;
 import com.example.article.api.model.NewsResponse;
 import com.example.article.utils.ConfigUtils;
+import com.example.article.utils.NetworkUtils;
+import com.example.article.utils.CacheManager;
 
 import org.json.JSONObject;
 
@@ -28,6 +29,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import com.google.gson.reflect.TypeToken;
 
 public class ApiClient {
     private static final String TAG = "ApiClient";
@@ -36,12 +38,14 @@ public class ApiClient {
     private final String apiKey;
     private final String baseUrl;
     private final Context context;
+    private final CacheManager cacheManager;
     
     private static final int CONNECTION_TIMEOUT = 15; // Seconds
     private static final int READ_TIMEOUT = 15; // Seconds
 
     private ApiClient(Context context) {
         this.context = context.getApplicationContext();
+        this.cacheManager = CacheManager.getInstance(context);
         
         // Đọc config từ file
         JSONObject config = ConfigUtils.getConfigJson(context);
@@ -50,18 +54,12 @@ public class ApiClient {
             baseUrl = apiConfig.getString("baseUrl");
             apiKey = apiConfig.getString("apiKey");
             
-            // Tùy chỉnh OkHttpClient với timeout
-            OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
-                    .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
-                    .build();
-            
-            // Khởi tạo Retrofit
+            // Khởi tạo Retrofit với client đã cấu hình
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
-                    .client(okHttpClient)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+                .baseUrl(baseUrl)
+                .client(NetworkUtils.getClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
             apiService = retrofit.create(ApiService.class);
         } catch (Exception e) {
@@ -140,54 +138,51 @@ public class ApiClient {
     
     // Phương thức tìm kiếm bài viết với từ khóa
     public void getEverything(String query, final ApiCallback<List<NewsArticle>> callback) {
-        try {
-            // Lấy tin tức theo từ khóa
-            Log.d(TAG, "Fetching news from API for query: " + query);
-            
-            // Lấy tin tức trong khoảng 7 ngày gần đây
-            Call<NewsResponse> call = apiService.getEverything(query, getDateBefore(7), getDateBefore(0), apiKey);
-            
-            call.enqueue(new Callback<NewsResponse>() {
-                @Override
-                public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        List<NewsArticle> articles = response.body().getArticles();
-                        
-                        if (articles != null && !articles.isEmpty()) {
-                            Log.d(TAG, "Articles fetched from API: " + articles.size() + " for query: " + query);
-                            callback.onSuccess(articles);
-                        } else {
-                            Log.d(TAG, "No articles found for query: " + query);
-                            // Gọi onSuccess với danh sách trống để tầng trên có thể quyết định xử lý
-                            callback.onSuccess(new ArrayList<>());
-                        }
-                    } else {
-                        String errorBody = "";
-                        try {
-                            if (response.errorBody() != null) {
-                                errorBody = response.errorBody().string();
-                            }
-                        } catch (IOException e) {
-                            // Ignore
-                        }
-                        
-                        String errorMessage = parseErrorResponse(response.code(), errorBody);
-                        Log.e(TAG, "Error fetching articles: " + response.code() + " - " + errorBody);
-                        callback.onError(errorMessage);
-                    }
-                }
+        String cacheKey = CacheManager.generateCacheKey("search", query);
 
-                @Override
-                public void onFailure(Call<NewsResponse> call, Throwable t) {
-                    String errorMessage = "Network Error: " + t.getMessage();
-                    Log.e(TAG, "Network error: " + t.getMessage());
-                    callback.onError(errorMessage);
-                }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, "Exception in getEverything: " + e.getMessage());
-            callback.onError("Error: " + e.getMessage());
+        // Kiểm tra cache trước
+        if (cacheManager.hasValidCache(cacheKey)) {
+            TypeToken<List<NewsArticle>> typeToken = new TypeToken<List<NewsArticle>>() {};
+            List<NewsArticle> cachedArticles = cacheManager.get(cacheKey, typeToken);
+            if (cachedArticles != null) {
+                Log.d(TAG, "Using cached search results for query: " + query);
+                callback.onSuccess(cachedArticles);
+                return;
+            }
         }
+
+        // Tính toán khoảng thời gian tìm kiếm (7 ngày gần nhất)
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        String toDate = dateFormat.format(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+        String fromDate = dateFormat.format(calendar.getTime());
+
+        // Gọi API nếu không có cache
+        Call<NewsResponse> call = apiService.getEverything(query, fromDate, toDate, apiKey);
+        call.enqueue(new Callback<NewsResponse>() {
+            @Override
+            public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<NewsArticle> articles = response.body().getArticles();
+                    if (articles != null && !articles.isEmpty()) {
+                        // Lưu vào cache
+                        cacheManager.put(cacheKey, articles);
+                        Log.d(TAG, "Search results fetched and cached for query: " + query);
+                        callback.onSuccess(articles);
+                    } else {
+                        callback.onSuccess(new ArrayList<>());
+                    }
+                } else {
+                    handleApiError(response, cacheKey, callback);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsResponse> call, Throwable t) {
+                handleNetworkError(t, cacheKey, callback);
+            }
+        });
     }
     
     // Phương thức tìm kiếm bài viết với từ khóa và phân trang
@@ -278,58 +273,80 @@ public class ApiClient {
      * @param callback Callback để trả về kết quả
      */
     public void getTopHeadlines(String category, final ApiCallback<List<NewsArticle>> callback) {
-        try {
-            // Gọi API lấy tin tức theo danh mục
-            Log.d(TAG, "Fetching top headlines for category: " + category);
-            
-            String countryCode = "us"; // Mặc định lấy tin tức của Mỹ
-            Call<NewsResponse> call = apiService.getTopHeadlines(countryCode, apiKey);
-            
-            if (!category.equals("general")) {
-                // Nếu có category cụ thể, thêm vào parameters
-                call = apiService.getTopHeadlinesByCategory(countryCode, category, apiKey);
-            }
-            
-            call.enqueue(new Callback<NewsResponse>() {
-                @Override
-                public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        List<NewsArticle> articles = response.body().getArticles();
-                        
-                        if (articles != null && !articles.isEmpty()) {
-                            Log.d(TAG, "Top headline articles fetched: " + articles.size() + " for category: " + category);
-                            callback.onSuccess(articles);
-                        } else {
-                            Log.d(TAG, "No top headline articles found for category: " + category);
-                            // Gọi onSuccess với danh sách trống để tầng trên có thể quyết định xử lý
-                            callback.onSuccess(new ArrayList<>());
-                        }
-                    } else {
-                        String errorBody = "";
-                        try {
-                            if (response.errorBody() != null) {
-                                errorBody = response.errorBody().string();
-                            }
-                        } catch (IOException e) {
-                            // Ignore
-                        }
-                        
-                        String errorMessage = parseErrorResponse(response.code(), errorBody);
-                        Log.e(TAG, "Error fetching top headlines: " + response.code() + " - " + errorBody);
-                        callback.onError(errorMessage);
-                    }
-                }
+        String cacheKey = CacheManager.generateCacheKey("headlines", category);
 
-                @Override
-                public void onFailure(Call<NewsResponse> call, Throwable t) {
-                    String errorMessage = "Network Error: " + t.getMessage();
-                    Log.e(TAG, "Network error fetching top headlines: " + t.getMessage());
-                    callback.onError(errorMessage);
+        // Kiểm tra cache trước
+        if (cacheManager.hasValidCache(cacheKey)) {
+            TypeToken<List<NewsArticle>> typeToken = new TypeToken<List<NewsArticle>>() {};
+            List<NewsArticle> cachedArticles = cacheManager.get(cacheKey, typeToken);
+            if (cachedArticles != null) {
+                Log.d(TAG, "Using cached headlines for category: " + category);
+                callback.onSuccess(cachedArticles);
+                return;
+            }
+        }
+
+        // Nếu không có cache hoặc cache đã hết hạn, gọi API
+        Call<NewsResponse> call = apiService.getTopHeadlines(category, apiKey);
+        call.enqueue(new Callback<NewsResponse>() {
+            @Override
+            public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<NewsArticle> articles = response.body().getArticles();
+                    if (articles != null && !articles.isEmpty()) {
+                        // Lưu vào cache
+                        cacheManager.put(cacheKey, articles);
+                        Log.d(TAG, "Headlines fetched and cached for category: " + category);
+                        callback.onSuccess(articles);
+                    } else {
+                        callback.onSuccess(new ArrayList<>());
+                    }
+                } else {
+                    handleApiError(response, cacheKey, callback);
                 }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, "Exception in getTopHeadlines: " + e.getMessage());
-            callback.onError("Error: " + e.getMessage());
+            }
+
+            @Override
+            public void onFailure(Call<NewsResponse> call, Throwable t) {
+                handleNetworkError(t, cacheKey, callback);
+            }
+        });
+    }
+
+    private void handleApiError(Response<NewsResponse> response, String cacheKey, ApiCallback<List<NewsArticle>> callback) {
+        String errorMessage = "Error " + response.code();
+        try {
+            if (response.errorBody() != null) {
+                errorMessage += ": " + response.errorBody().string();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Error reading error body", e);
+        }
+        Log.e(TAG, errorMessage);
+
+        // Thử lấy từ cache khi có lỗi API
+        TypeToken<List<NewsArticle>> typeToken = new TypeToken<List<NewsArticle>>() {};
+        List<NewsArticle> cachedArticles = cacheManager.get(cacheKey, typeToken);
+        if (cachedArticles != null) {
+            Log.d(TAG, "Using expired cache due to API error");
+            callback.onSuccess(cachedArticles);
+        } else {
+            callback.onError(errorMessage);
+        }
+    }
+
+    private void handleNetworkError(Throwable t, String cacheKey, ApiCallback<List<NewsArticle>> callback) {
+        String errorMessage = "Network Error: " + t.getMessage();
+        Log.e(TAG, errorMessage, t);
+
+        // Thử lấy từ cache khi có lỗi mạng
+        TypeToken<List<NewsArticle>> typeToken = new TypeToken<List<NewsArticle>>() {};
+        List<NewsArticle> cachedArticles = cacheManager.get(cacheKey, typeToken);
+        if (cachedArticles != null) {
+            Log.d(TAG, "Using expired cache due to network error");
+            callback.onSuccess(cachedArticles);
+        } else {
+            callback.onError(errorMessage);
         }
     }
 

@@ -53,7 +53,8 @@
         android:label="@string/article_detail"
         tools:layout="@layout/fragment_detail">
         <argument
-            android:name="articleUrl"
-            app:argType="string" />
+            android:name="article"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation> 

@@ -1,21 +1,27 @@
 package com.example.article.ui.saved;
 
+import android.app.AlertDialog;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.article.R;
 import com.example.article.adapter.NewsAdapter;
 import com.example.article.api.model.NewsArticle;
-import com.example.article.MainActivity;
+import com.example.article.utils.ArticleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +29,11 @@ import java.util.List;
 public class SavedFragment extends Fragment implements NewsAdapter.OnNewsClickListener {
 
     private RecyclerView recyclerViewSaved;
-    private TextView tvEmptySaved;
+    private View emptyView;
     private NewsAdapter savedArticlesAdapter;
     private List<NewsArticle> savedArticles = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ImageButton btnDeleteAll;
 
     @Nullable
     @Override
@@ -37,83 +45,117 @@ public class SavedFragment extends Fragment implements NewsAdapter.OnNewsClickLi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        // Khởi tạo các thành phần UI và sự kiện
         initViews(view);
         setupRecyclerView();
+        setupListeners();
         loadSavedArticles();
-        
-        // Thiết lập click listener cho nút thông báo
-        View btnNotification = view.findViewById(R.id.btnNotification);
-        if (btnNotification != null) {
-            btnNotification.setOnClickListener(v -> {
-                // Gọi đến MainActivity để xử lý hiển thị thông báo
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).showNotifications(v);
-                }
-            });
-        }
     }
     
     private void initViews(View view) {
         recyclerViewSaved = view.findViewById(R.id.recyclerViewSaved);
-        tvEmptySaved = view.findViewById(R.id.tvEmptySaved);
+        emptyView = view.findViewById(R.id.emptyView);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        btnDeleteAll = view.findViewById(R.id.btnDeleteAll);
+        
+        // Setup back button
+        ImageButton btnBack = view.findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
+        });
     }
     
     private void setupRecyclerView() {
         savedArticlesAdapter = new NewsAdapter(this);
+        recyclerViewSaved.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewSaved.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, 
+                                     @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                outRect.top = (int) (5 * getResources().getDisplayMetrics().density);
+                outRect.bottom = (int) (5 * getResources().getDisplayMetrics().density);
+            }
+        });
         recyclerViewSaved.setAdapter(savedArticlesAdapter);
     }
     
+    private void setupListeners() {
+        // Setup swipe refresh
+        swipeRefreshLayout.setOnRefreshListener(this::loadSavedArticles);
+        
+        // Setup delete all button
+        btnDeleteAll.setOnClickListener(v -> showDeleteAllConfirmDialog());
+    }
+    
     private void loadSavedArticles() {
-        // Tải dữ liệu mẫu
-        loadSampleData();
-        
-        // Cập nhật UI dựa trên dữ liệu
-        updateEmptyView();
-        savedArticlesAdapter.setNewsList(savedArticles);
+        if (getContext() != null) {
+            savedArticles = ArticleUtils.getSavedArticles(getContext());
+            updateUI();
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
     
-    private void loadSampleData() {
-        // Xóa dữ liệu cũ
-        savedArticles.clear();
-        
-        // Thêm một số bài viết mẫu đã lưu
-        NewsArticle article1 = new NewsArticle();
-        article1.setTitle("Saved Article 1");
-        article1.setDescription("This is a saved article about technology");
-        article1.setUrl("https://example.com/tech");
-        article1.setPublishedAt("2023-06-15");
-        article1.setUrlToImage("https://via.placeholder.com/150");
-        NewsArticle.Source source1 = new NewsArticle.Source();
-        source1.setName("Tech News");
-        article1.setSource(source1);
-        savedArticles.add(article1);
-        
-        NewsArticle article2 = new NewsArticle();
-        article2.setTitle("Saved Article 2");
-        article2.setDescription("This is a saved article about health");
-        article2.setUrl("https://example.com/health");
-        article2.setPublishedAt("2023-06-14");
-        article2.setUrlToImage("https://via.placeholder.com/150");
-        NewsArticle.Source source2 = new NewsArticle.Source();
-        source2.setName("Health News");
-        article2.setSource(source2);
-        savedArticles.add(article2);
-    }
-    
-    private void updateEmptyView() {
+    private void updateUI() {
         if (savedArticles.isEmpty()) {
-            tvEmptySaved.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.VISIBLE);
             recyclerViewSaved.setVisibility(View.GONE);
+            btnDeleteAll.setVisibility(View.GONE);
         } else {
-            tvEmptySaved.setVisibility(View.GONE);
+            emptyView.setVisibility(View.GONE);
             recyclerViewSaved.setVisibility(View.VISIBLE);
+            btnDeleteAll.setVisibility(View.VISIBLE);
+            savedArticlesAdapter.setNewsList(savedArticles);
         }
     }
 
     @Override
     public void onNewsClick(NewsArticle article) {
-        // Xử lý sự kiện khi người dùng nhấn vào bài viết đã lưu
-        Toast.makeText(getContext(), "Đã chọn: " + article.getTitle(), Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putString("articleUrl", article.getUrl());
+        Navigation.findNavController(requireView())
+                .navigate(R.id.action_saved_to_detail, bundle);
+    }
+
+    @Override
+    public void onShareClick(NewsArticle article) {
+        ArticleUtils.shareArticle(requireContext(), article);
+    }
+
+    @Override
+    public void onBookmarkClick(NewsArticle article) {
+        showDeleteConfirmDialog(article);
+    }
+    
+    private void showDeleteConfirmDialog(NewsArticle article) {
+        new AlertDialog.Builder(requireContext())
+            .setTitle(R.string.delete_confirm)
+            .setPositiveButton(R.string.yes, (dialog, which) -> {
+                ArticleUtils.unsaveArticle(requireContext(), article);
+                Toast.makeText(getContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
+                loadSavedArticles();
+            })
+            .setNegativeButton(R.string.no, null)
+            .show();
+    }
+    
+    private void showDeleteAllConfirmDialog() {
+        new AlertDialog.Builder(requireContext())
+            .setTitle(R.string.delete_all_confirm)
+            .setPositiveButton(R.string.yes, (dialog, which) -> {
+                if (getContext() != null) {
+                    ArticleUtils.clearSavedArticles(getContext());
+                    Toast.makeText(getContext(), R.string.all_deleted, Toast.LENGTH_SHORT).show();
+                    loadSavedArticles();
+                }
+            })
+            .setNegativeButton(R.string.no, null)
+            .show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadSavedArticles();
     }
 } 

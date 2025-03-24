@@ -53,7 +53,7 @@
     
     <!-- Article Details -->
     <string name="article_image">Article image</string>
-    <string name="share">Share</string>
+    <string name="share">Chia sẻ bài viết</string>
     <string name="bookmark">Bookmark</string>
 
     <!-- Refresh -->
@@ -92,4 +92,18 @@
     <string name="restart_to_apply_font_size">Restart app to apply new font size</string>
     <string name="restart_to_apply_high_contrast">Restart app to apply contrast setting</string>
     <!-- Profile Settings End -->
+
+    <!-- Saved Articles -->
+    <string name="saved_articles">Bài viết đã lưu</string>
+    <string name="no_saved_articles">Chưa có bài viết nào được lưu</string>
+    <string name="back">Quay lại</string>
+    <string name="delete_all">Xóa tất cả</string>
+    <string name="delete_all_confirm">Bạn có chắc chắn muốn xóa tất cả bài viết đã lưu?</string>
+    <string name="delete_confirm">Xóa bài viết này?</string>
+    <string name="yes">Có</string>
+    <string name="no">Không</string>
+    <string name="deleted">Đã xóa</string>
+    <string name="all_deleted">Đã xóa tất cả bài viết</string>
+    <string name="saved">Đã lưu bài viết</string>
+    <string name="save_article">Lưu bài viết</string>
 </resources>

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.article.R;
 
+
 public class NotificationsFragment extends Fragment {
 
     @Nullable
