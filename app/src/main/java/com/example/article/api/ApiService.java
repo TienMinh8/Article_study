@@ -23,6 +23,7 @@ public interface ApiService {
             @Query("q") String query,
             @Query("from") String from,
             @Query("to") String to,
+            @Query("language") String language,
             @Query("apiKey") String apiKey
     );
 
@@ -33,12 +34,14 @@ public interface ApiService {
             @Query("to") String to,
             @Query("page") int page,
             @Query("pageSize") int pageSize,
+            @Query("language") String language,
             @Query("apiKey") String apiKey
     );
 
     @GET("top-headlines")
     Call<NewsResponse> getTopHeadlines(
             @Query("country") String country,
+            @Query("language") String language,
             @Query("apiKey") String apiKey
     );
 
@@ -46,6 +49,7 @@ public interface ApiService {
     Call<NewsResponse> getTopHeadlinesByCategory(
             @Query("country") String country,
             @Query("category") String category,
+            @Query("language") String language,
             @Query("apiKey") String apiKey
     );
 

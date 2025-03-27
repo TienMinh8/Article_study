@@ -10,6 +10,7 @@ import com.example.article.api.model.NewsResponse;
 import com.example.article.utils.ConfigUtils;
 import com.example.article.utils.NetworkUtils;
 import com.example.article.utils.CacheManager;
+import com.example.article.utils.LanguageUtils;
 
 import org.json.JSONObject;
 
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.HashMap;
 
 import okhttp3.CacheControl;
 import okhttp3.OkHttpClient;
@@ -98,7 +101,13 @@ public class ApiClient {
             Log.d(TAG, "Fetching Tesla news from API: " + fromDate + " to: " + toDate);
             
             // Gọi API với tham số phù hợp với thời gian hiện tại
-            Call<NewsResponse> call = apiService.getEverything("tesla", fromDate, toDate, apiKey);
+            Call<NewsResponse> call = apiService.getEverything(
+                "tesla", 
+                fromDate, 
+                toDate, 
+                getCurrentLanguage(),
+                apiKey
+            );
             
             call.enqueue(new Callback<NewsResponse>() {
                 @Override
@@ -159,7 +168,13 @@ public class ApiClient {
         String fromDate = dateFormat.format(calendar.getTime());
 
         // Gọi API nếu không có cache
-        Call<NewsResponse> call = apiService.getEverything(query, fromDate, toDate, apiKey);
+        Call<NewsResponse> call = apiService.getEverything(
+            query, 
+            fromDate, 
+            toDate, 
+            getCurrentLanguage(),
+            apiKey
+        );
         call.enqueue(new Callback<NewsResponse>() {
             @Override
             public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
@@ -193,7 +208,13 @@ public class ApiClient {
             
             // Lấy tin tức trong khoảng 7 ngày gần đây, với phân trang
             Call<NewsResponse> call = apiService.getEverythingPaged(
-                    query, getDateBefore(7), getDateBefore(0), page, 10, apiKey);
+                    query, 
+                    getDateBefore(7), 
+                    getDateBefore(0), 
+                    page, 
+                    10, 
+                    getCurrentLanguage(),
+                    apiKey);
             
             call.enqueue(new Callback<NewsResponse>() {
                 @Override
@@ -210,31 +231,20 @@ public class ApiClient {
                             callback.onSuccess(new ArrayList<>());
                         }
                     } else {
-                        String errorBody = "";
-                        try {
-                            if (response.errorBody() != null) {
-                                errorBody = response.errorBody().string();
-                            }
-                        } catch (IOException e) {
-                            // Ignore
-                        }
-                        
-                        String errorMessage = parseErrorResponse(response.code(), errorBody);
-                        Log.e(TAG, "Error fetching articles: " + response.code() + " - " + errorBody);
-                        callback.onError(errorMessage);
+                        Log.e(TAG, "API call failed: " + response.code());
+                        callback.onError("API call failed: " + response.code());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<NewsResponse> call, Throwable t) {
-                    String errorMessage = "Network Error: " + t.getMessage();
-                    Log.e(TAG, "Network error: " + t.getMessage());
-                    callback.onError(errorMessage);
+                    Log.e(TAG, "API call failed", t);
+                    callback.onError(t.getMessage());
                 }
             });
         } catch (Exception e) {
-            Log.e(TAG, "Exception in getEverything with paging: " + e.getMessage());
-            callback.onError("Error: " + e.getMessage());
+            Log.e(TAG, "Error fetching news", e);
+            callback.onError(e.getMessage());
         }
     }
     
@@ -273,7 +283,7 @@ public class ApiClient {
      * @param callback Callback để trả về kết quả
      */
     public void getTopHeadlines(String category, final ApiCallback<List<NewsArticle>> callback) {
-        String cacheKey = CacheManager.generateCacheKey("headlines", category);
+        String cacheKey = CacheManager.generateCacheKey("headlines", category, getCurrentLanguage());
 
         // Kiểm tra cache trước
         if (cacheManager.hasValidCache(cacheKey)) {
@@ -287,19 +297,40 @@ public class ApiClient {
         }
 
         // Nếu không có cache hoặc cache đã hết hạn, gọi API
-        Call<NewsResponse> call = apiService.getTopHeadlines(category, apiKey);
+        Call<NewsResponse> call;
+        if (category != null && !category.isEmpty()) {
+            // Nếu có category, gọi API với category
+            call = apiService.getTopHeadlinesByCategory(
+                "us", // country code
+                category,
+                getCurrentLanguage(),
+                apiKey
+            );
+        } else {
+            // Nếu không có category, gọi API lấy tất cả tin tức
+            call = apiService.getTopHeadlines(
+                "us", // country code
+                getCurrentLanguage(),
+                apiKey
+            );
+        }
+
         call.enqueue(new Callback<NewsResponse>() {
             @Override
             public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<NewsArticle> articles = response.body().getArticles();
                     if (articles != null && !articles.isEmpty()) {
+                        // Lọc và sắp xếp bài viết
+                        articles = filterAndSortArticles(articles);
+                        
                         // Lưu vào cache
                         cacheManager.put(cacheKey, articles);
                         Log.d(TAG, "Headlines fetched and cached for category: " + category);
                         callback.onSuccess(articles);
                     } else {
-                        callback.onSuccess(new ArrayList<>());
+                        // Nếu không có bài viết, thử lấy từ nguồn khác
+                        fetchAlternativeNews(category, callback);
                     }
                 } else {
                     handleApiError(response, cacheKey, callback);
@@ -311,6 +342,59 @@ public class ApiClient {
                 handleNetworkError(t, cacheKey, callback);
             }
         });
+    }
+
+    private void fetchAlternativeNews(String category, final ApiCallback<List<NewsArticle>> callback) {
+        // Thử lấy tin tức từ nguồn khác
+        Call<NewsResponse> call = apiService.getEverything(
+            category != null ? category : "news",
+            getDateBefore(7),
+            getDateBefore(0),
+            getCurrentLanguage(),
+            apiKey
+        );
+
+        call.enqueue(new Callback<NewsResponse>() {
+            @Override
+            public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<NewsArticle> articles = response.body().getArticles();
+                    if (articles != null && !articles.isEmpty()) {
+                        // Lọc và sắp xếp bài viết
+                        articles = filterAndSortArticles(articles);
+                        callback.onSuccess(articles);
+                    } else {
+                        callback.onSuccess(new ArrayList<>());
+                    }
+                } else {
+                    callback.onSuccess(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsResponse> call, Throwable t) {
+                callback.onSuccess(new ArrayList<>());
+            }
+        });
+    }
+
+    private List<NewsArticle> filterAndSortArticles(List<NewsArticle> articles) {
+        // Lọc bỏ các bài viết trùng lặp
+        Map<String, NewsArticle> uniqueArticles = new HashMap<>();
+        for (NewsArticle article : articles) {
+            if (article.getUrl() != null && !uniqueArticles.containsKey(article.getUrl())) {
+                uniqueArticles.put(article.getUrl(), article);
+            }
+        }
+
+        // Chuyển đổi Map thành List và sắp xếp theo thời gian
+        List<NewsArticle> filteredArticles = new ArrayList<>(uniqueArticles.values());
+        filteredArticles.sort((a1, a2) -> {
+            if (a1.getPublishedAt() == null || a2.getPublishedAt() == null) return 0;
+            return a2.getPublishedAt().compareTo(a1.getPublishedAt());
+        });
+
+        return filteredArticles;
     }
 
     private void handleApiError(Response<NewsResponse> response, String cacheKey, ApiCallback<List<NewsArticle>> callback) {
@@ -347,6 +431,18 @@ public class ApiClient {
             callback.onSuccess(cachedArticles);
         } else {
             callback.onError(errorMessage);
+        }
+    }
+
+    private String getCurrentLanguage() {
+        String language = LanguageUtils.getCurrentLanguage(context);
+        // Chuyển đổi mã ngôn ngữ từ ứng dụng sang mã ngôn ngữ của API
+        switch (language) {
+            case "vi":
+                return "vi"; // Tiếng Việt
+            case "en":
+            default:
+                return "en"; // Tiếng Anh
         }
     }
 

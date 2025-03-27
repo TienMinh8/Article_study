@@ -114,4 +114,17 @@ public class CacheManager {
         }
         return key.toString().toLowerCase();
     }
+    
+    /**
+     * Xóa tất cả dữ liệu đã cache
+     */
+    public void clearAll() {
+        SharedPreferences.Editor editor = cache.edit();
+        editor.clear();
+        editor.apply();
+        editor = cacheTimestamp.edit();
+        editor.clear();
+        editor.apply();
+        Log.d(TAG, "All cached data cleared");
+    }
 } 

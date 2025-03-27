@@ -5,7 +5,7 @@
     <string name="tab_saved">Saved</string>
     <string name="tab_notifications">Notifications</string>
     <string name="tab_profile">Profile</string>
-    
+
     <string name="view_all">View all</string>
     <string name="breaking_news">Breaking News</string>
     <string name="recommendation">Recommendation</string>
@@ -28,7 +28,7 @@
     <string name="no_article_url">No article URL found.</string>
     <string name="load_more">Load More</string>
     <string name="using_sample_data">Using sample data</string>
-    
+
     <!-- Network error messages -->
     <string name="retry">Retry</string>
     <string name="connection_timeout_error">Connection timeout. The server took too long to respond.</string>
@@ -36,7 +36,7 @@
     <string name="too_many_requests">Too many requests. The API rate limit has been reached.</string>
     <string name="unauthorized_api_key">API key validation error. Please contact support.</string>
     <string name="general_network_error">Network error. Please try again later.</string>
-    
+
     <!-- Notification messages -->
     <string name="notification_title">News Update</string>
     <string name="notification_message">New articles available</string>
@@ -50,7 +50,7 @@
     <string name="category_science">Science</string>
     <string name="category_health">Health</string>
     <string name="loading_category">Loading %s news…</string>
-    
+
     <!-- Article Details -->
     <string name="article_image">Article image</string>
     <string name="share">Chia sẻ bài viết</string>
@@ -60,7 +60,7 @@
     <string name="refreshing">Refreshing…</string>
     <string name="refresh_complete">Refresh complete</string>
     <string name="pull_to_refresh">Pull to refresh</string>
-    
+
     <!-- Load More -->
     <string name="loading_more">Loading more…</string>
     <string name="no_more_results">No more results</string>
@@ -108,4 +108,29 @@
     <string name="save_article">Lưu bài viết</string>
     <string name="font_size_changed">Font size has been updated</string>
     <string name="error_loading_content">Error loading content: %s</string>
+
+    <string name="settings">Settings</string>
+    <string name="language">Language</string>
+    <string name="notifications">Notifications</string>
+    <string name="rate_app">Rate App</string>
+    <string name="feedback">Feedback</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="coming_soon">Coming soon!</string>
+
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="subject">Subject</string>
+    <string name="message">Message</string>
+    <string name="submit">Submit</string>
+    <string name="feedback_sent">Feedback sent successfully</string>
+    <string name="error_sending_feedback">Error sending feedback</string>
+    <string name="please_fill_all_fields">Please fill all fields</string>
+
+    <!-- Language Settings -->
+    <string name="language_changed">Language changed successfully</string>
+    <string name="breaking_news_desc">Get notified about breaking news and important updates</string>
+    <string name="daily_digest_desc">Receive a daily summary of top stories</string>
+    <string name="saved_articles_notification_desc">Get notified when new articles are available in your saved categories</string>
+    <string name="daily_digest">Daily Digest</string>
+    <string name="saved_articles_notification">Saved Articles Notifications</string>
 </resources>

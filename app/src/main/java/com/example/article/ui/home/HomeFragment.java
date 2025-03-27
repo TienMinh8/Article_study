@@ -1,6 +1,7 @@
 package com.example.article.ui.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -8,9 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,14 +28,13 @@ import com.example.article.adapter.BreakingNewsAdapter;
 import com.example.article.adapter.NewsAdapter;
 import com.example.article.api.ApiClient;
 import com.example.article.api.model.NewsArticle;
+import com.example.article.ui.views.MenuSetting;
 import com.example.article.utils.ArticleUtils;
 import com.example.article.utils.ItemSpacingDecoration;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.example.article.utils.NetworkUtils;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -69,6 +68,7 @@ public class HomeFragment extends Fragment implements NewsAdapter.OnNewsClickLis
     private ShimmerFrameLayout shimmerFrameLayout;
     private View mainContent;
     private boolean isLoading = true;
+    private ImageButton btnMenu;
 
     // Biến để lưu trữ danh sách kết quả đầy đủ
     private List<NewsArticle> fullResultList;
@@ -76,14 +76,23 @@ public class HomeFragment extends Fragment implements NewsAdapter.OnNewsClickLis
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        
+        // Initialize views
+        btnMenu = root.findViewById(R.id.btnMenu);
+        
+        // Set click listener for menu button
+        btnMenu.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), MenuSetting.class);
+            startActivity(intent);
+        });
         
         // Khởi tạo shimmer và content views
-        shimmerFrameLayout = view.findViewById(R.id.shimmerFrameLayout);
-        mainContent = view.findViewById(R.id.mainContent);
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        shimmerFrameLayout = root.findViewById(R.id.shimmerFrameLayout);
+        mainContent = root.findViewById(R.id.mainContent);
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout);
         
-        return view;
+        return root;
     }
 
     @Override

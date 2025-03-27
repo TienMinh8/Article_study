@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.article.utils.ThemeUtils;
+import com.example.article.utils.LanguageUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
         ThemeUtils.applyAppTheme(this);
         
         super.onCreate(savedInstanceState);
+        
+        // Apply saved language
+        LanguageUtils.applySavedLanguage(this);
+        
         setContentView(R.layout.activity_main);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
