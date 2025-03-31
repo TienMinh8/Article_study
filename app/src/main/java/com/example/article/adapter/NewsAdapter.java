@@ -1,6 +1,7 @@
 package com.example.article.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.example.article.api.ApiClient;
 import com.example.article.api.model.NewsArticle;
 import com.example.article.utils.DateUtils;
 import com.example.article.utils.ArticleUtils;
+import com.example.article.services.NewsSummaryService;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.button.MaterialButton;
 
@@ -91,6 +93,29 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 viewHolder.descriptionTextView.setText(article.getDescription());
             } else {
                 viewHolder.descriptionTextView.setVisibility(View.GONE);
+            }
+            
+            // Hiển thị tóm tắt nếu có
+            if (article.getSummary() != null && !article.getSummary().isEmpty()) {
+                viewHolder.summaryTextView.setVisibility(View.VISIBLE);
+                viewHolder.summaryTextView.setText(article.getSummary());
+            } else {
+                viewHolder.summaryTextView.setVisibility(View.GONE);
+                
+                // Tạo tóm tắt nếu chưa có
+                NewsSummaryService summaryService = new NewsSummaryService(viewHolder.itemView.getContext());
+                summaryService.generateSummary(article, new NewsSummaryService.SummaryCallback() {
+                    @Override
+                    public void onSuccess(String summary) {
+                        article.setSummary(summary);
+                        notifyItemChanged(position);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e("NewsAdapter", "Error generating summary: " + error);
+                    }
+                });
             }
             
             // Load ảnh với Glide
@@ -309,6 +334,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView titleTextView;
         TextView sourceTextView;
         TextView descriptionTextView;
+        TextView summaryTextView;
         MaterialButton btnShare;
         MaterialButton btnBookmark;
 
@@ -318,6 +344,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             titleTextView = itemView.findViewById(R.id.titleTextView);
             sourceTextView = itemView.findViewById(R.id.sourceTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
+            summaryTextView = itemView.findViewById(R.id.summaryTextView);
             btnShare = itemView.findViewById(R.id.btnShare);
             btnBookmark = itemView.findViewById(R.id.btnBookmark);
         }

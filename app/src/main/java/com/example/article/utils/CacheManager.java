@@ -9,100 +9,132 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CacheManager {
     private static final String TAG = "CacheManager";
-    private static final String PREF_NAME = "api_cache";
-    private static final String PREF_TIMESTAMP = "api_cache_timestamp";
-    private static final long CACHE_EXPIRY = 10 * 60 * 1000; // 10 phút
+    private static final String PREF_NAME = "news_cache";
+    private static final String CACHE_TIMESTAMP_PREFIX = "timestamp_";
+    private static final long CACHE_DURATION = 5 * 60 * 1000; // 5 phút
+    private static final long OLD_CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 ngày
     
     private static CacheManager instance;
-    private final SharedPreferences cache;
-    private final SharedPreferences cacheTimestamp;
-    private final Gson gson;
+    private final SharedPreferences preferences;
+    private final Map<String, Object> memoryCache;
     
     private CacheManager(Context context) {
-        cache = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        cacheTimestamp = context.getSharedPreferences(PREF_TIMESTAMP, Context.MODE_PRIVATE);
-        gson = new Gson();
+        preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        memoryCache = new ConcurrentHashMap<>();
     }
     
-    public static synchronized CacheManager getInstance(Context context) {
+    public static CacheManager getInstance(Context context) {
         if (instance == null) {
-            instance = new CacheManager(context.getApplicationContext());
+            synchronized (CacheManager.class) {
+                if (instance == null) {
+                    instance = new CacheManager(context.getApplicationContext());
+                }
+            }
         }
         return instance;
     }
     
-    public <T> void put(String key, T data) {
+    public void putString(String key, String value) {
         try {
-            String json = gson.toJson(data);
-            cache.edit().putString(key, json).apply();
-            cacheTimestamp.edit().putLong(key, new Date().getTime()).apply();
-            Log.d(TAG, "Cached data for key: " + key);
+            preferences.edit().putString(key, value).apply();
+            preferences.edit().putLong(CACHE_TIMESTAMP_PREFIX + key, System.currentTimeMillis()).apply();
+            memoryCache.put(key, value);
         } catch (Exception e) {
-            Log.e(TAG, "Error caching data: " + e.getMessage());
+            Log.e(TAG, "Error caching string: " + e.getMessage());
         }
     }
     
-    public <T> T get(String key, Class<T> type) {
+    public String getString(String key) {
         try {
-            String json = cache.getString(key, null);
-            if (json == null) return null;
-            
-            // Kiểm tra thời gian cache
-            long timestamp = cacheTimestamp.getLong(key, 0);
-            if (isExpired(timestamp)) {
-                remove(key);
-                return null;
+            // Kiểm tra trong memory cache trước
+            Object cachedValue = memoryCache.get(key);
+            if (cachedValue instanceof String) {
+                return (String) cachedValue;
             }
             
-            return gson.fromJson(json, type);
+            // Nếu không có trong memory cache, lấy từ SharedPreferences
+            String value = preferences.getString(key, null);
+            if (value != null) {
+                // Kiểm tra thời gian cache
+                long timestamp = preferences.getLong(CACHE_TIMESTAMP_PREFIX + key, 0);
+                if (System.currentTimeMillis() - timestamp < CACHE_DURATION) {
+                    memoryCache.put(key, value);
+                    return value;
+                }
+            }
         } catch (Exception e) {
-            Log.e(TAG, "Error retrieving cached data: " + e.getMessage());
-            return null;
+            Log.e(TAG, "Error getting cached string: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    public void put(String key, Object value) {
+        try {
+            String jsonValue = new Gson().toJson(value);
+            preferences.edit().putString(key, jsonValue).apply();
+            preferences.edit().putLong(CACHE_TIMESTAMP_PREFIX + key, System.currentTimeMillis()).apply();
+            memoryCache.put(key, value);
+        } catch (Exception e) {
+            Log.e(TAG, "Error caching object: " + e.getMessage());
         }
     }
     
     public <T> T get(String key, TypeToken<T> typeToken) {
         try {
-            String json = cache.getString(key, null);
-            if (json == null) return null;
-            
-            // Kiểm tra thời gian cache
-            long timestamp = cacheTimestamp.getLong(key, 0);
-            if (isExpired(timestamp)) {
-                remove(key);
-                return null;
+            // Kiểm tra trong memory cache trước
+            Object cachedValue = memoryCache.get(key);
+            if (cachedValue != null && typeToken.getRawType().isInstance(cachedValue)) {
+                return (T) cachedValue;
             }
             
-            Type type = typeToken.getType();
-            return gson.fromJson(json, type);
+            // Nếu không có trong memory cache, lấy từ SharedPreferences
+            String jsonValue = preferences.getString(key, null);
+            if (jsonValue != null) {
+                // Kiểm tra thời gian cache
+                long timestamp = preferences.getLong(CACHE_TIMESTAMP_PREFIX + key, 0);
+                if (System.currentTimeMillis() - timestamp < CACHE_DURATION) {
+                    T value = new Gson().fromJson(jsonValue, typeToken.getType());
+                    memoryCache.put(key, value);
+                    return value;
+                }
+            }
         } catch (Exception e) {
-            Log.e(TAG, "Error retrieving cached data: " + e.getMessage());
-            return null;
+            Log.e(TAG, "Error getting cached object: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    public boolean hasValidCache(String key) {
+        try {
+            long timestamp = preferences.getLong(CACHE_TIMESTAMP_PREFIX + key, 0);
+            return System.currentTimeMillis() - timestamp < CACHE_DURATION;
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking cache validity: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public void clearCache() {
+        try {
+            preferences.edit().clear().apply();
+            memoryCache.clear();
+        } catch (Exception e) {
+            Log.e(TAG, "Error clearing cache: " + e.getMessage());
         }
     }
     
     public void remove(String key) {
-        cache.edit().remove(key).apply();
-        cacheTimestamp.edit().remove(key).apply();
-        Log.d(TAG, "Removed cache for key: " + key);
-    }
-    
-    public void clear() {
-        cache.edit().clear().apply();
-        cacheTimestamp.edit().clear().apply();
-        Log.d(TAG, "Cleared all cache");
-    }
-    
-    private boolean isExpired(long timestamp) {
-        return new Date().getTime() - timestamp > CACHE_EXPIRY;
-    }
-    
-    public boolean hasValidCache(String key) {
-        return cache.contains(key) && 
-               !isExpired(cacheTimestamp.getLong(key, 0));
+        try {
+            preferences.edit().remove(key).apply();
+            preferences.edit().remove(CACHE_TIMESTAMP_PREFIX + key).apply();
+            memoryCache.remove(key);
+        } catch (Exception e) {
+            Log.e(TAG, "Error removing cache: " + e.getMessage());
+        }
     }
     
     public static String generateCacheKey(String... params) {
@@ -119,12 +151,10 @@ public class CacheManager {
      * Xóa tất cả dữ liệu đã cache
      */
     public void clearAll() {
-        SharedPreferences.Editor editor = cache.edit();
+        SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.apply();
-        editor = cacheTimestamp.edit();
-        editor.clear();
-        editor.apply();
+        memoryCache.clear();
         Log.d(TAG, "All cached data cleared");
     }
 } 

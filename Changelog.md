@@ -18,6 +18,12 @@
 - Quản lý danh sách bài viết đã lưu
 - Hiển thị trạng thái bookmark cho mỗi bài viết
 - Thông báo khi thêm/xóa bài viết khỏi danh sách đã lưu
+- Tính năng tóm tắt tin tức bằng AI
+  - Tích hợp API AI để tóm tắt nội dung bài viết
+  - Thêm hiển thị tóm tắt trong giao diện bài viết
+  - Hỗ trợ cache tóm tắt để tối ưu hiệu suất
+  - Tự động tạo tóm tắt khi bài viết được hiển thị
+  - Hỗ trợ đa ngôn ngữ (tiếng Anh và tiếng Việt)
 
 ### Changed
 - Cập nhật giao diện nút bookmark để hiển thị trạng thái đã lưu/chưa lưu

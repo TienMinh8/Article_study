@@ -29,6 +29,9 @@ public class NewsArticle {
 
     // Property không có trong API, dùng cho hiển thị UI
     private String category;
+    
+    // Tóm tắt bài viết được tạo bởi AI
+    private String summary;
 
     public NewsArticle() {
     }
@@ -103,6 +106,14 @@ public class NewsArticle {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public static class Source {

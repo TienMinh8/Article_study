@@ -31,7 +31,12 @@ Ví dụ: ionicons: ^0.2.2
 *Chi tiết tại: [UI_Instructions.md](UI_Instructions.md)*
 
 ## 🧠 Tính Năng Thông Minh
-- ❌ Tóm tắt tin tức bằng AI
+- ✅ Tóm tắt tin tức bằng AI
+  - Tích hợp API AI (ai.dreamapi.net) để tóm tắt nội dung
+  - Hỗ trợ đa ngôn ngữ (tiếng Anh và tiếng Việt)
+  - Cache tóm tắt để tối ưu hiệu suất
+  - Tự động tạo tóm tắt khi bài viết được hiển thị
+  - Xử lý lỗi và timeout thông minh
 - ❌ Đề xuất nội dung cá nhân hóa
 - ❌ Phân loại tin tức thông minh
 - ❌ Chức năng đọc sau
